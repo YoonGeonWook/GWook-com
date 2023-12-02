@@ -1,5 +1,5 @@
 ---
-pagetitle: "Data Analytics Blog"
+pagetitle: "Data Analysis Blog"
 page-layout: full
 title-block-banner: false
 
@@ -17,8 +17,6 @@ listing:
   page-size: 9
 toc: false
 toc-location: body
-page-layout: full
-title-block-banner: false
 ---
 
 ```{r write-redirects}
@@ -32,3 +30,5 @@ blog <- list.dirs(
 
 ```
 
+
+## Latest [Posts](/blog)

@@ -1,6 +1,8 @@
 [
   {
     "listing": "/index.html",
-    "items": []
+    "items": [
+      "/blog/2023-12-03-ecommerce-data-analysis/index.html"
+    ]
   }
 ]

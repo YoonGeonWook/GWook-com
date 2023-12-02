@@ -1,0 +1,14 @@
+{
+  "hash": "d552495f1c07d227e2a373d51c34a56d",
+  "result": {
+    "markdown": "---\ntitle: \"E-commerce 데이터 분석 (1)\"\ndescription: |\n  UCI Machine Learning Repository: Online Retail Dataset\ndate: Sys.Date()\ncategories: [machine learning, statistics]\nimage: ecommerce.jpg\n---\n\n\n\n\n![문제해결 프로세스 7단계](seven-step-problem-solving-process.png)",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
