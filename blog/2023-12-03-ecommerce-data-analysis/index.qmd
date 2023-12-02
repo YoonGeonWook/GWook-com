@@ -1,1 +1,13 @@
+---
+title: "E-commerce 데이터 분석 (1)"
+description: |
+  UCI Machine Learning Repository: Online Retail Dataset
+date: Sys.Date()
+categories: [machine learning, statistics]
+image: "https://raw.githubusercontent.com/YoonGeonWook/GWook-com/blob/main/blog/2023-12-03-ecommerce-data-analysis/ecommerce.jpg"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, comment = ">")
+```
 
