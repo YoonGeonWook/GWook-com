@@ -2,24 +2,50 @@ project:
   type: website
   render: 
     - "*.qmd"
-    - "*.md"'
+    - "*.md"
     - "blog/**/*.qmd"
     - "about/index.*qmd"
   # prerender:
 
 website:
-  title: "GWook"
+  title: "GeonWook"
+  site-url: https://gwook.blog
+  repo-url: https://github.com/YoonGeonWook/GWook-com
+  repo-actions:
+    - source
+    - edit
+    - issue
+  open-graph: true
   navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+    # title: gwook
+    background: light
+    right:
+      - text: Blog
+        file: blog/index.qmd
+      - text: About
+        file: about/index.qmd
+      - icon: github
+        href: https://github.com/YoonGeonWook
 
 format:
   html:
-    theme: cosmo
+    author: "Yoon GeonWook"
+    comments:
+      utterances:
+        repo: YoonGeonWook/GWook-com
+    theme: my-theme.scss
     css: styles.css
     toc: true
+    toc-location: "left"
+    code-link: true
+    anchor-sections: true
+    fig-cap-location: margin
+    reference-location: margin
+    mainfont: "Lato"
+    monofont: "Fira Mono"
+    footnotes-hover: true
+    fontsize: 1em
+    
 
 editor: visual
 
