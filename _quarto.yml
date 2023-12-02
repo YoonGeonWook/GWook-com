@@ -1,0 +1,25 @@
+project:
+  type: website
+  render: 
+    - "*.qmd"
+    - "*.md"'
+    - "blog/**/*.qmd"
+    - "about/index.*qmd"
+  # prerender:
+
+website:
+  title: "GWook"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
