@@ -14,12 +14,22 @@
 <item>
   <title>E-commerce 데이터 분석 (1)</title>
   <link>https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/index.html</link>
-  <description><![CDATA[ <p>본 포스팅은 패스트캠퍼스 <a href="https://fastcampus.co.kr/data_online_msignature">50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐</a>의 강의내용을 바탕으로 참고하여 작성하였습니다.</p>
+  <description><![CDATA[ <div class="cell">
+<style type="text/css">
+pre code, pre, code {
+  <!-- white-space: pre !important; -->
+  overflow-x: scroll !important;
+  <!-- word-break: keep-all !important; -->
+  <!-- word-wrap: initial !important; -->
+}
+</style>
+</div>
+<p>본 포스팅은 패스트캠퍼스 <a href="https://fastcampus.co.kr/data_online_msignature">50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐</a>의 강의내용을 바탕으로 참고하여 작성하였습니다.</p>
 <div id="fig-1" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full"><p><img src="https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/seven-step-problem-solving-process.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption margin-caption">Figure&nbsp;1: 문제해결 프로세스 7단계</figcaption></figure>
 </div>
-<section id="sec-1" class="level2"><h2 class="anchored" data-anchor-id="sec-1">1. 문제해결 프로세스 기획</h2>
+<section id="sec-1" class="level2"><h2 class="anchored" data-anchor-id="sec-1">01. 문제해결 프로세스 기획</h2>
 <p>패스트캠퍼스 강의 중 박지환 강사님께서 준비 해주신 이커머스 데이터 분석 예제를 참고하여 진행하였습니다. 주어진 문제의 시나리오는 아래와 같습니다.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -38,6 +48,16 @@
 </div>
 </div>
 <p>이 시나리오를 기반으로 문제해결 프로세스 Figure&nbsp;1 에 따라 7가지 단계를 아래와 같이 정의할 수 있습니다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+문제해결 프로세스
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <section id="step-1.-문제정의" class="level4"><h4 class="anchored" data-anchor-id="step-1.-문제정의">Step 1. 문제정의</h4>
 <ul>
 <li>문제현상: 신규 고객 유입 후 재구매로 이어지는 고객의 감소</li>
@@ -51,9 +71,350 @@
 <li>① EDA 및 일회성 데이터 분석을 통해 재구매 고객의 특성을 분석하고 이를 토대로 마케팅 기획</li>
 <li>② 재구매 가능성이 높은 고객을 예측하는 모델링 후 이를 활용한 타겟 마케팅 진행</li>
 </ul></section><section id="step-4.-우선순위" class="level4"><h4 class="anchored" data-anchor-id="step-4.-우선순위">Step 4. 우선순위</h4>
+<ul>
+<li>①번을 빠르게 수행 후 파일럿 테스트 진행 및 성과 측정</li>
+<li>①번의 효과가 좋지 않다면, ②번 진행 후 파일럿 테스트 재실행</li>
+</ul></section><section id="step-5.-데이터-분석" class="level4"><h4 class="anchored" data-anchor-id="step-5.-데이터-분석">Step 5. 데이터 분석</h4>
+<ul>
+<li>결정된 우선순위에 따라서 데이터 분석 및 모델링 진행</li>
+</ul></section><section id="step-6.-성과측정" class="level4"><h4 class="anchored" data-anchor-id="step-6.-성과측정">Step 6. 성과측정</h4>
+<ul>
+<li>최종 마케팅 후 성능을 평가하기 위한 지표 수립</li>
+<li>분석 및 모델링을 통해 추출한 타겟 고객군과 대조군을 설정하여 A/B 테스트 수행</li>
+<li>A/B 테스트 결과 마케팅(재구매) 반응률 비교를 통해 통계적으로 유의미한지 검증: <code>t-test</code>
+</li>
+<li>유의미한 결과를 얻을 때까지 파일럿 테스트를 수정하며 진행</li>
+</ul></section><section id="step-7.-모델-운영" class="level4"><h4 class="anchored" data-anchor-id="step-7.-모델-운영">Step 7. 모델 운영</h4>
+<ul>
+<li>파일럿 테스트 후 결과가 유의미하다면 정규 마케팅으로 운영하기 위한 작업 준비</li>
+<li>모델을 실행을 위한 주기와 추출 타겟 고객군의 범위 결정</li>
+<li>정해진 주기에 따라 타겟 고객군의 추출을 자동화</li>
+<li>이를 마케팅 시스템과 연계하여 타겟 마케팅을 주기적으로 운영 및 평가</li>
+</ul></section>
+</div>
+</div>
+<p>현재 Step 1~4의 단계가 완료되어 <strong>데이터 분석을 수행</strong>해야 하는 단계라고 간주하겠습니다.</p>
+</section><section id="data-readiness-check-sampling" class="level2"><h2 class="anchored" data-anchor-id="data-readiness-check-sampling">02. Data Readiness Check &amp; Sampling</h2>
+<p>사용하고자 하는 데이터는 <a href="https://archive.ics.uci.edu/">UCI Machine Learning Repository</a>에서 제공하는 <a href="https://archive.ics.uci.edu/datasets?search=Online+Retail">Online Retail</a> 데이터를 사용해 진행했습니다.</p>
+<p>이 Online Retail 데이터를 A사에서 수집한 고객 거래 이력 데이터로 간주하고 해당 데이터에 대한 기본적인 전처리를 수행하겠습니다.</p>
+<section id="data-info-check" class="level3"><h3 class="anchored" data-anchor-id="data-info-check">02-01. Data Info Check</h3>
+<p>주어진 데이터는 e-commerce 온라인 구매 데이터로 데이터 명세표는 아래와 같습니다.</p>
+<table class="table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: center;"><code>InvoiceNo</code></th>
+<th style="text-align: center;"><code>StockCode</code></th>
+<th style="text-align: center;"><code>Description</code></th>
+<th style="text-align: center;"><code>Quantity</code></th>
+<th style="text-align: center;"><code>InvoiceDate</code></th>
+<th style="text-align: center;"><code>UnitPrice</code></th>
+<th style="text-align: center;"><code>CustomerID</code></th>
+<th style="text-align: center;"><code>Country</code></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">송장번호</td>
+<td style="text-align: center;">재고코드</td>
+<td style="text-align: center;">상세설명</td>
+<td style="text-align: center;">수량</td>
+<td style="text-align: center;">송장날짜</td>
+<td style="text-align: center;">개당가격</td>
+<td style="text-align: center;">고객ID</td>
+<td style="text-align: center;">국가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Categorical</td>
+<td style="text-align: center;">Categorical</td>
+<td style="text-align: center;">Categorical</td>
+<td style="text-align: center;">Integer</td>
+<td style="text-align: center;">Date</td>
+<td style="text-align: center;">Continuous</td>
+<td style="text-align: center;">Categorical</td>
+<td style="text-align: center;">Categorical</td>
+</tr>
+</tbody>
+</table>
+<p>이제 수집된 데이터의 기본적인 정보를 확인해 보겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Online Retail.csv"</span>, col_types <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ccciTdcc"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  InvoiceNo StockCode Description                           Quantity InvoiceDate         UnitPrice CustomerID Country       
+  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                                    &lt;int&gt; &lt;dttm&gt;                  &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         
+1 489434    85048     "15CM CHRISTMAS GLASS BALL 20 LIGHTS"       12 2009-12-01 07:45:00      6.95 13085      United Kingdom
+2 489434    79323P    "PINK CHERRY LIGHTS"                        12 2009-12-01 07:45:00      6.75 13085      United Kingdom
+3 489434    79323W    "WHITE CHERRY LIGHTS"                       12 2009-12-01 07:45:00      6.75 13085      United Kingdom
+4 489434    22041     "RECORD FRAME 7\" SINGLE SIZE"              48 2009-12-01 07:45:00      2.1  13085      United Kingdom
+5 489434    21232     "STRAWBERRY CERAMIC TRINKET BOX"            24 2009-12-01 07:45:00      1.25 13085      United Kingdom
+6 489434    22064     "PINK DOUGHNUT TRINKET POT"                 24 2009-12-01 07:45:00      1.65 13085      United Kingdom</code></pre>
+</div>
+</div>
+<section id="data-크기-확인" class="level4"><h4 class="anchored" data-anchor-id="data-크기-확인"><strong>Data 크기 확인</strong></h4>
+<div class="cell">
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 1,067,370 rows &amp; 8 cols</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1067370       8</code></pre>
+</div>
+</div>
+</section><section id="data-type-확인" class="level4"><h4 class="anchored" data-anchor-id="data-type-확인"><strong>Data type 확인</strong></h4>
+<div class="cell">
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,067,370
+Columns: 8
+$ InvoiceNo   &lt;chr&gt; "489434", "489434", "489434", "489434", "489434", "489434", "489434", "489434", "489435", "489435", "489435", "489435", "489436", "489436", "489436", "489436", "489436", "489436"…
+$ StockCode   &lt;chr&gt; "85048", "79323P", "79323W", "22041", "21232", "22064", "21871", "21523", "22350", "22349", "22195", "22353", "48173C", "21755", "21754", "84879", "22119", "22142", "22296", "222…
+$ Description &lt;chr&gt; "15CM CHRISTMAS GLASS BALL 20 LIGHTS", "PINK CHERRY LIGHTS", "WHITE CHERRY LIGHTS", "RECORD FRAME 7\" SINGLE SIZE", "STRAWBERRY CERAMIC TRINKET BOX", "PINK DOUGHNUT TRINKET POT",…
+$ Quantity    &lt;int&gt; 12, 12, 12, 48, 24, 24, 24, 10, 12, 12, 24, 12, 10, 18, 3, 16, 3, 12, 12, 12, 16, 4, 2, 12, 12, 12, 3, 6, 8, 8, 24, 6, 6, 12, 2, 1, 2, 2, 2, 3, 12, 12, 6, 3, 12, 12, 12, 12, 6, 6…
+$ InvoiceDate &lt;dttm&gt; 2009-12-01 07:45:00, 2009-12-01 07:45:00, 2009-12-01 07:45:00, 2009-12-01 07:45:00, 2009-12-01 07:45:00, 2009-12-01 07:45:00, 2009-12-01 07:45:00, 2009-12-01 07:45:00, 2009-12-0…
+$ UnitPrice   &lt;dbl&gt; 6.95, 6.75, 6.75, 2.10, 1.25, 1.65, 1.25, 5.95, 2.55, 3.75, 1.65, 2.55, 5.95, 5.45, 5.95, 1.69, 6.95, 1.45, 1.65, 1.65, 3.39, 3.75, 8.50, 4.65, 2.10, 2.10, 5.95, 2.95, 1.25, 1.25…
+$ CustomerID  &lt;chr&gt; "13085", "13085", "13085", "13085", "13085", "13085", "13085", "13085", "13085", "13085", "13085", "13085", "13078", "13078", "13078", "13078", "13078", "13078", "13078", "13078"…
+$ Country     &lt;chr&gt; "United Kingdom", "United Kingdom", "United Kingdom", "United Kingdom", "United Kingdom", "United Kingdom", "United Kingdom", "United Kingdom", "United Kingdom", "United Kingdom"…</code></pre>
+</div>
+</div>
+</section><section id="변수별-결측치-확인" class="level4"><h4 class="anchored" data-anchor-id="변수별-결측치-확인"><strong>변수별 결측치 확인</strong></h4>
+<div class="cell">
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  InvoiceNo   StockCode Description    Quantity InvoiceDate   UnitPrice  CustomerID     Country 
+          0           0        4382           0           0           0      243007           0 </code></pre>
+</div>
+</div>
+<p>고객 식별 정보인 <code>CustomerID</code> 같은 변수에 결측치가 있는 경우에는 추후에 해당 고객에 대한 정보를 알 수 없으므로 사전에 정보를 알 수 없는 불분명한 데이터로 취급하여 삭제하는 것이 좋습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"CustomerID"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  InvoiceNo   StockCode Description    Quantity InvoiceDate   UnitPrice  CustomerID     Country 
+          0           0           0           0           0           0           0           0 </code></pre>
+</div>
+</div>
+</section><section id="outlier-확인" class="level4"><h4 class="anchored" data-anchor-id="outlier-확인"><strong>Outlier 확인</strong></h4>
+<div class="cell">
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/select_all.html">select_if</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">is.numeric</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Quantity           UnitPrice       
+ Min.   :-80995.00   Min.   :    0.00  
+ 1st Qu.:     2.00   1st Qu.:    1.25  
+ Median :     5.00   Median :    1.95  
+ Mean   :    12.41   Mean   :    3.68  
+ 3rd Qu.:    12.00   3rd Qu.:    3.75  
+ Max.   : 80995.00   Max.   :38970.00  </code></pre>
+</div>
+</div>
+<p>구매 수량을 나타내는 <code>Quantity</code>는 음수 값을 가질 수 없으나, 반품 물품에 대한 값이 있으므로 확인 후 처리해야 합니다. 여기서는 <code>Quantity</code>가 음수인 값은 이상치(Outlier)라고 간주하고 삭제하겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Quantity가 음수인 데이터 확인 </span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 반품 및 회수 물량일 수도 있음</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Quantity</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 18,744 × 8
+   InvoiceNo StockCode Description                       Quantity InvoiceDate         UnitPrice CustomerID Country       
+   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                                &lt;int&gt; &lt;dttm&gt;                  &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         
+ 1 C489449   22087     PAPER BUNTING WHITE LACE               -12 2009-12-01 10:33:00      2.95 16321      Australia     
+ 2 C489449   85206A    CREAM FELT EASTER EGG BASKET            -6 2009-12-01 10:33:00      1.65 16321      Australia     
+ 3 C489449   21895     POTTING SHED SOW 'N' GROW SET           -4 2009-12-01 10:33:00      4.25 16321      Australia     
+ 4 C489449   21896     POTTING SHED TWINE                      -6 2009-12-01 10:33:00      2.1  16321      Australia     
+ 5 C489449   22083     PAPER CHAIN KIT RETRO SPOT             -12 2009-12-01 10:33:00      2.95 16321      Australia     
+ 6 C489449   21871     SAVE THE PLANET MUG                    -12 2009-12-01 10:33:00      1.25 16321      Australia     
+ 7 C489449   84946     ANTIQUE SILVER TEA GLASS ETCHED        -12 2009-12-01 10:33:00      1.25 16321      Australia     
+ 8 C489449   84970S    HANGING HEART ZINC T-LIGHT HOLDER      -24 2009-12-01 10:33:00      0.85 16321      Australia     
+ 9 C489449   22090     PAPER BUNTING RETRO SPOTS              -12 2009-12-01 10:33:00      2.95 16321      Australia     
+10 C489459   90200A    PURPLE SWEETHEART BRACELET              -3 2009-12-01 10:44:00      4.25 17592      United Kingdom
+# ℹ 18,734 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Quantity 음수값 제거</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Quantity</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
 
 
-</section></section> ]]></description>
+</section></section></section> ]]></description>
   <category>machine learning</category>
   <category>statistics</category>
   <guid>https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/index.html</guid>
