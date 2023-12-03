@@ -9,6 +9,7 @@ project:
 
 website:
   title: "GeonWook"
+  favicon: images/study.png
   site-url: https://gwook.blog
   repo-url: https://github.com/YoonGeonWook/GWook-com
   repo-actions:
@@ -45,6 +46,7 @@ format:
     monofont: "Fira Mono"
     footnotes-hover: true
     fontsize: 1em
+    link-external-newwindow: true
     
 
 editor: visual

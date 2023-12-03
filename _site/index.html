@@ -27,6 +27,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./images/study.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-listing/list.min.js"></script>
 <script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -154,7 +155,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="machine learning,statistics" data-listing-date-sort="NaN" data-listing-file-modified-sort="1701547077467" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="0" data-categories="machine learning,statistics" data-listing-date-sort="NaN" data-listing-file-modified-sort="1701609746509" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
 <div class="thumbnail">
 <p><a href="./blog/2023-12-03-ecommerce-data-analysis/index.html"> <img src="./blog/2023-12-03-ecommerce-data-analysis/ecommerce.jpg" class="thumbnail-image"></a></p>
 </div>
@@ -177,7 +178,7 @@ E-commerce 데이터 분석 (1)
 Invalid Date
 </div>
 <div class="listing-reading-time">
-1 min
+2 min
 </div>
 </a>
 </div>
@@ -417,6 +418,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp("https:\/\/gwook\.blog");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
 });
 </script><script src="https://utteranc.es/client.js" repo="YoonGeonWook/GWook-com" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
