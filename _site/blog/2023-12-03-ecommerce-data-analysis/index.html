@@ -90,7 +90,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><link rel="stylesheet" href="../../styles.css">
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="GeonWook - E-commerce 데이터 분석 (1)">
 <meta property="og:description" content="UCI Machine Learning Repository: Online Retail Dataset">
 <meta property="og:image" content="https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/ecommerce.jpg">
@@ -112,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item">
-    <a class="nav-link" href="../../blog/index.qmd" rel="" target="">
+    <a class="nav-link" href="../../index.html" rel="" target="">
  <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
@@ -175,6 +175,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <a href="#data-readiness-check-sampling" id="toc-data-readiness-check-sampling" class="nav-link" data-scroll-target="#data-readiness-check-sampling">02. Data Readiness Check &amp; Sampling</a>
   <ul class="collapse">
 <li><a href="#data-info-check" id="toc-data-info-check" class="nav-link" data-scroll-target="#data-info-check">02-01. Data Info Check</a></li>
+  <li>
+<a href="#data-readiness-check" id="toc-data-readiness-check" class="nav-link" data-scroll-target="#data-readiness-check">02-03. Data Readiness Check</a>
+  <ul class="collapse">
+<li><a href="#target-label-%EC%83%9D%EC%84%B1" id="toc-target-label-생성" class="nav-link" data-scroll-target="#target-label-%EC%83%9D%EC%84%B1">(1) Target Label 생성</a></li>
+  <li><a href="#target-ratio-%ED%99%95%EC%9D%B8" id="toc-target-ratio-확인" class="nav-link" data-scroll-target="#target-ratio-%ED%99%95%EC%9D%B8">(2) Target Ratio 확인</a></li>
+  </ul>
+</li>
+  </ul>
+</li>
+  <li>
+<a href="#data-sampling" id="toc-data-sampling" class="nav-link" data-scroll-target="#data-sampling">03. Data Sampling</a>
+  <ul class="collapse">
+<li><a href="#under-sampling-stratified-sampling" id="toc-under-sampling-stratified-sampling" class="nav-link" data-scroll-target="#under-sampling-stratified-sampling">03-01. Under-sampling: Stratified sampling</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/YoonGeonWook/GWook-com/blob/main/blog/2023-12-03-ecommerce-data-analysis/index.qmd" class="toc-action">View source</a></p><p><a href="https://github.com/YoonGeonWook/GWook-com/edit/main/blog/2023-12-03-ecommerce-data-analysis/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/YoonGeonWook/GWook-com/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -198,7 +211,7 @@ pre code, pre, code {
 <figure class="figure page-columns page-full"><p><img src="seven-step-problem-solving-process.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption margin-caption">Figure&nbsp;1: 문제해결 프로세스 7단계</figcaption></figure>
 </div>
-<section id="sec-1" class="level2"><h2 class="anchored" data-anchor-id="sec-1">01. 문제해결 프로세스 기획</h2>
+<section id="sec-1" class="level1"><h1>01. 문제해결 프로세스 기획</h1>
 <p>패스트캠퍼스 강의 중 박지환 강사님께서 준비 해주신 이커머스 데이터 분석 예제를 참고하여 진행하였습니다. 주어진 문제의 시나리오는 아래와 같습니다.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -263,10 +276,10 @@ pre code, pre, code {
 </div>
 </div>
 <p>현재 Step 1~4의 단계가 완료되어 <strong>데이터 분석을 수행</strong>해야 하는 단계라고 간주하겠습니다.</p>
-</section><section id="data-readiness-check-sampling" class="level2"><h2 class="anchored" data-anchor-id="data-readiness-check-sampling">02. Data Readiness Check &amp; Sampling</h2>
+</section><section id="data-readiness-check-sampling" class="level1"><h1>02. Data Readiness Check &amp; Sampling</h1>
 <p>사용하고자 하는 데이터는 <a href="https://archive.ics.uci.edu/">UCI Machine Learning Repository</a>에서 제공하는 <a href="https://archive.ics.uci.edu/datasets?search=Online+Retail">Online Retail</a> 데이터를 사용해 진행했습니다.</p>
 <p>이 Online Retail 데이터를 A사에서 수집한 고객 거래 이력 데이터로 간주하고 해당 데이터에 대한 기본적인 전처리를 수행하겠습니다.</p>
-<section id="data-info-check" class="level3"><h3 class="anchored" data-anchor-id="data-info-check">02-01. Data Info Check</h3>
+<section id="data-info-check" class="level2"><h2 class="anchored" data-anchor-id="data-info-check">02-01. Data Info Check</h2>
 <p>주어진 데이터는 e-commerce 온라인 구매 데이터로 데이터 명세표는 아래와 같습니다.</p>
 <table class="table">
 <colgroup>
@@ -411,9 +424,1004 @@ $ Country     &lt;chr&gt; "United Kingdom", "United Kingdom", "United Kingdom", 
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Quantity 음수값 제거</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Quantity</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section><section id="중복-데이터-확인" class="level4"><h4 class="anchored" data-anchor-id="중복-데이터-확인"><strong>중복 데이터 확인</strong></h4>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>duplicated <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">duplicated</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  duplicated      n
+  &lt;lgl&gt;       &lt;int&gt;
+1 FALSE      779494
+2 TRUE        26125</code></pre>
+</div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 중복 데이터 확인</span></span>
+<span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">df</span>, fromLast <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 50,838 × 8
+   InvoiceNo StockCode Description                       Quantity InvoiceDate         UnitPrice CustomerID Country       
+   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                                &lt;int&gt; &lt;dttm&gt;                  &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         
+ 1 489517    21913     VINTAGE SEASIDE JIGSAW PUZZLES           1 2009-12-01 11:34:00      3.75 16329      United Kingdom
+ 2 489517    21912     VINTAGE SNAKES &amp; LADDERS                 1 2009-12-01 11:34:00      3.75 16329      United Kingdom
+ 3 489517    21821     GLITTER STAR GARLAND WITH BELLS          1 2009-12-01 11:34:00      3.75 16329      United Kingdom
+ 4 489517    22319     HAIRCLIPS FORTIES FABRIC ASSORTED       12 2009-12-01 11:34:00      0.65 16329      United Kingdom
+ 5 489517    22130     PARTY CONE CHRISTMAS DECORATION          6 2009-12-01 11:34:00      0.85 16329      United Kingdom
+ 6 489517    21912     VINTAGE SNAKES &amp; LADDERS                 1 2009-12-01 11:34:00      3.75 16329      United Kingdom
+ 7 489517    21491     SET OF THREE VINTAGE GIFT WRAPS          1 2009-12-01 11:34:00      1.95 16329      United Kingdom
+ 8 489517    22130     PARTY CONE CHRISTMAS DECORATION          6 2009-12-01 11:34:00      0.85 16329      United Kingdom
+ 9 489517    22319     HAIRCLIPS FORTIES FABRIC ASSORTED       12 2009-12-01 11:34:00      0.65 16329      United Kingdom
+10 489517    21913     VINTAGE SEASIDE JIGSAW PUZZLES           1 2009-12-01 11:34:00      3.75 16329      United Kingdom
+# ℹ 50,828 more rows</code></pre>
+</div>
+</div>
+<p>26,125개의 데이터가 중복되었음을 확인할 수 있습니다. 데이터의 정확성과 품질을 위해 중복 데이터를 삭제하겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 중복 삭제 후 재확인</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>duplicated <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+       n
+   &lt;int&gt;
+1 779494</code></pre>
+</div>
+</div>
+<p>이렇게 데이터에 대한 기본적인 정보와 전처리를 마치고 데이터의 형태를 보면 아래와 같이 기존 1,067,370개의 행에서 779,494개의 행으로 줄었습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 1,067,370 → 779,494</span></span>
+<span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 779494      8</code></pre>
+</div>
+</div>
+</section></section><section id="data-readiness-check" class="level2"><h2 class="anchored" data-anchor-id="data-readiness-check">02-03. Data Readiness Check</h2>
+<p>데이터에 대한 기본 정보를 확인했으니 이제 현재 가지고 있는 데이터로 앞서 기획한 문제해결 프로세스를 적용할 수 있는지 점검해야 합니다.</p>
+<section id="target-label-생성" class="level3"><h3 class="anchored" data-anchor-id="target-label-생성">(1) Target Label 생성</h3>
+<p>당월 구매 고객이 다음 달에 재구매 시 해당 고객을 재구매 고객으로 정의하겠습니다. 예를들어, 2011년 01월에 구매한 고객이 2011년 02월에 구매를 한다면 해당 고객을 재구매 고객으로 정의하는 것입니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 기준년월 변수 생성: bsym - %Y-%m 형식</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>bsym <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span><span class="va">InvoiceDate</span>, <span class="st">"%Y-%m"</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co"># 원본 데이터 저장: df_origin</span></span>
+<span><span class="va">df_origin</span> <span class="op">&lt;-</span> <span class="va">df</span></span>
+<span><span class="co"># 데이터 적재 기간 확인: 2009-12-01 ~ 2011-12-09 (약 2년)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">InvoiceDate</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">InvoiceDate</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2009-12-01 07:45:00 UTC"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2011-12-09 12:50:00 UTC"</code></pre>
+</div>
+</div>
+<p>기본적인 전처리가 완료된 데이터를 <code>df_origin</code>으로 저장하여 보존하고, 이후 있을 전처리를 진행하겠습니다. Target label은 기준년월(<code>bsym</code>)과 고객(<code>CustomerID</code>)에만 영향을 받으므로 해당 두 변수를 고유하게 갖는 데이터로 재구성하겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">bsym</span>, <span class="va">CustomerID</span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 25598     2</code></pre>
+</div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  bsym    CustomerID
+  &lt;chr&gt;   &lt;chr&gt;     
+1 2009-12 13085     
+2 2009-12 13078     
+3 2009-12 15362     
+4 2009-12 18102     
+5 2009-12 12682     
+6 2009-12 18087     </code></pre>
+</div>
+</div>
+<p>2009년 12월부터 2011년 12월까지 연도 및 월(<code>bsym</code>)별로 당월 구매 고객이 내월 구매 고객일 경우 1을 갖는 <code>target</code> 변수(binary: 0,1)를 만들어 보겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 주어진 bsym에 구매 고객이 내월 구매 고객일 경우 1, 그렇지 않으면 0 값을 갖는 </span></span>
+<span><span class="co"># target 변수 생성: process_bsym()</span></span>
+<span><span class="va">process_bsym</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">bsym_value</span>, <span class="va">df</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df_left</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">bsym</span> <span class="op">==</span> <span class="va">bsym_value</span><span class="op">)</span></span>
+<span>  <span class="va">bsym_1m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html">ymd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">bsym_value</span>, <span class="st">"-01"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://lubridate.tidyverse.org/reference/mplus.html">%m+%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html">months</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span><span class="st">"%Y-%m"</span><span class="op">)</span></span>
+<span>  <span class="va">df_right</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bsym</span> <span class="op">==</span> <span class="va">bsym_1m</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">CustomerID</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>target <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">df_merge</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">df_left</span>, <span class="va">df_right</span>, by <span class="op">=</span> <span class="st">"CustomerID"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span>, <span class="fl">0</span>, <span class="va">target</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">df_merge</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># 모든 bsym 값에 대해 process_bsym 함수 적용</span></span>
+<span><span class="va">df_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_df</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">bsym</span><span class="op">)</span>, <span class="op">~</span><span class="fu">process_bsym</span><span class="op">(</span><span class="va">.x</span>, <span class="va">df</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_all</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  bsym    CustomerID target
+  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
+1 2009-12 13085           1
+2 2009-12 13078           1
+3 2009-12 15362           0
+4 2009-12 18102           1
+5 2009-12 12682           1
+6 2009-12 18087           1</code></pre>
+</div>
+</div>
+</section><section id="target-ratio-확인" class="level3"><h3 class="anchored" data-anchor-id="target-ratio-확인">(2) Target Ratio 확인</h3>
+<p>연도 및 월별로 재구매 고객 여부 변수 <code>target</code>의 비율을 확인해 보겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 기준년월 기준 Target ratio 확인</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>pillar.sigfig <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="va">df_target</span> <span class="op">&lt;-</span> <span class="va">df_all</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">bsym</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html">reframe</a></span><span class="op">(</span>total_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span>,</span>
+<span>          count_y <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>          ratio <span class="op">=</span> <span class="va">total_y</span><span class="op">/</span><span class="va">count_y</span><span class="op">)</span> </span>
+<span><span class="va">df_target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 25 × 4
+   bsym    total_y count_y    ratio
+   &lt;chr&gt;     &lt;dbl&gt;   &lt;int&gt;    &lt;dbl&gt;
+ 1 2009-12     337     955 0.352880
+ 2 2010-01     262     720 0.363889
+ 3 2010-02     314     774 0.405685
+ 4 2010-03     378    1057 0.357616
+ 5 2010-04     345     942 0.366242
+ 6 2010-05     368     966 0.380952
+ 7 2010-06     392    1041 0.376561
+ 8 2010-07     351     928 0.378233
+ 9 2010-08     365     911 0.400659
+10 2010-09     463    1145 0.404367
+11 2010-10     657    1497 0.438878
+12 2010-11     524    1607 0.326073
+13 2010-12     324     885 0.366102
+14 2011-01     262     741 0.353576
+15 2011-02     290     758 0.382586
+16 2011-03     304     974 0.312115
+17 2011-04     368     856 0.429907
+18 2011-05     410    1056 0.388258
+19 2011-06     365     991 0.368315
+20 2011-07     388     949 0.408851
+21 2011-08     425     935 0.454545
+22 2011-09     489    1266 0.386256
+23 2011-10     622    1364 0.456012
+24 2011-11     371    1665 0.222823
+25 2011-12       0     615 0       </code></pre>
+</div>
+</div>
+<p>현재 주어진 데이터는 2011년 12월이 마지막이기 때문에 내월이 없는 2011년 12월은 <code>target</code> 변수가 1 값을 가질 수 없습니다. 따라서 분석 대상에서 제외시키겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_target</span> <span class="op">&lt;-</span> <span class="va">df_target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bsym</span> <span class="op">!=</span> <span class="st">'2011-12'</span><span class="op">)</span></span>
+<span><span class="va">df_all</span> <span class="op">&lt;-</span> <span class="va">df_all</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bsym</span> <span class="op">!=</span> <span class="st">'2011-12'</span><span class="op">)</span></span>
+<span><span class="va">df_target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24 × 4
+   bsym    total_y count_y    ratio
+   &lt;chr&gt;     &lt;dbl&gt;   &lt;int&gt;    &lt;dbl&gt;
+ 1 2009-12     337     955 0.352880
+ 2 2010-01     262     720 0.363889
+ 3 2010-02     314     774 0.405685
+ 4 2010-03     378    1057 0.357616
+ 5 2010-04     345     942 0.366242
+ 6 2010-05     368     966 0.380952
+ 7 2010-06     392    1041 0.376561
+ 8 2010-07     351     928 0.378233
+ 9 2010-08     365     911 0.400659
+10 2010-09     463    1145 0.404367
+11 2010-10     657    1497 0.438878
+12 2010-11     524    1607 0.326073
+13 2010-12     324     885 0.366102
+14 2011-01     262     741 0.353576
+15 2011-02     290     758 0.382586
+16 2011-03     304     974 0.312115
+17 2011-04     368     856 0.429907
+18 2011-05     410    1056 0.388258
+19 2011-06     365     991 0.368315
+20 2011-07     388     949 0.408851
+21 2011-08     425     935 0.454545
+22 2011-09     489    1266 0.386256
+23 2011-10     622    1364 0.456012
+24 2011-11     371    1665 0.222823</code></pre>
+</div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_target</span><span class="op">$</span><span class="va">ratio</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.2228  0.3623  0.3796  0.3784  0.4047  0.4560 </code></pre>
+</div>
+</div>
+<p>연도 및 월(<code>bsym</code>)별 <code>target</code>의 비율은 22.3% ~ 45.6%의 값을 가지며, 대부분의 월에서 36% ~ 40% 정도의 비율을 갖습니다. 전체 데이터의 <code>target</code>의 비율을 보면 아래와 같이 약 37.5% 정도의 내달 재구매 비율을 갖습니다. 이 정도의 class imbalance에 대해서는 over-sampling을 하지 않고 분석을 진행해도 괜찮을 것 같습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_all</span><span class="op">$</span><span class="va">target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3752151</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 마지막 행에 합계 추가</span></span>
+<span><span class="va">df_target</span> <span class="op">&lt;-</span> <span class="va">df_target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>bsym <span class="op">=</span> <span class="st">"total"</span>,</span>
+<span>           total_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">total_y</span><span class="op">)</span>,</span>
+<span>           count_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">count_y</span><span class="op">)</span>,</span>
+<span>           ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>  </span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section></section><section id="data-sampling" class="level1 page-columns page-full"><h1>03. Data Sampling</h1>
+<div id="fig-2" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full"><p><img src="stratified-sampling.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption margin-caption">Figure&nbsp;2: 층화추출법</figcaption></figure>
+</div>
+<p>현재 <code>df_all</code>에는 약 25,000건의 데이터가 있지만, 만일 데이터가 1억건 정도로 매우 큰 경우 모델링을 하기엔 부담스러울 수 있습니다. 이럴 경우를 대비해 해당 데이터를 모집단으로 간주하고 샘플링을 통해 데이터를 줄일 수 있습니다.</p>
+<section id="under-sampling-stratified-sampling" class="level2"><h2 class="anchored" data-anchor-id="under-sampling-stratified-sampling">03-01. Under-sampling: Stratified sampling</h2>
+<p>관심 변수(<code>target</code>)에 대해 함께 살펴보고 싶은 변수가 있을 시(여기선 <code>bsym</code>), 해당 변수를 층화 변수로 두어 층화추출법(stratified sampling)을 실시할 수 있습니다. 샘플링 기법 중 하나인 층화추출법은 모집단을 층화 변수로 나눈 후 각 층/소집단 별로 독립적으로 표본을 뽑는 샘플링 방법입니다. 이로 인해 모집단 데이터에서 층화 변수와 관심 변수가 갖는 관계를 표본 데이터에서도 유지할 수 있다는 장점이 있습니다. 즉, 표본의 대표성을 확보할 수 있는 방법입니다.</p>
+<p>현재 <code>df_all</code> 데이터를 모집단 데이터로 간주하고, 표본 데이터를 뽑고자 합니다. 이때 층화추출법을 사용하기 위해선 우선적으로 각 층(<code>bsym</code>)별 표본 크기가 주어져야 합니다. 이 과정을 표본 배분(sample allocation)이라고 합니다. 여기에서는 모집단 <code>df_all</code>의 <code>bsym</code>별 층 크기를 유지하기 위해 비례 배분(proportional allocation)을 사용하겠습니다. 비례 배분에 따른 표본 데이터의 표본 층 크기는 아래와 같습니다.</p>
+<p><span class="math display">\[
+n_h = n\times\frac{N_h}{\sum_{l=1}^HN_l}
+\]</span></p>
+<p><code>df_all</code> 데이터의 30%만 샘플링한다고 하겠습니다. 그럴 경우 필요한 층(<code>bsym</code>)별 표본 크기(<code>nh</code>)는 아래와 같습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 전체 데이터의 30%: 7495개</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_all</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7495</code></pre>
+</div>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 모집단 층 크기: Nh, 표본 층 크기: nh</span></span>
+<span><span class="va">df_target</span> <span class="op">&lt;-</span> <span class="va">df_target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_all</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_all</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html">relocate</a></span><span class="op">(</span><span class="va">count_y</span>, .after <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Nh <span class="op">=</span> <span class="va">count_y</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>nh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">Nh</span><span class="op">/</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">bsym</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">25</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 25 × 7
+# Groups:   bsym [25]
+   bsym    total_y    ratio     N     n    Nh    nh
+   &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+ 1 2009-12     337 0.352880 24983  7495   955   287
+ 2 2010-01     262 0.363889 24983  7495   720   216
+ 3 2010-02     314 0.405685 24983  7495   774   232
+ 4 2010-03     378 0.357616 24983  7495  1057   317
+ 5 2010-04     345 0.366242 24983  7495   942   283
+ 6 2010-05     368 0.380952 24983  7495   966   290
+ 7 2010-06     392 0.376561 24983  7495  1041   312
+ 8 2010-07     351 0.378233 24983  7495   928   278
+ 9 2010-08     365 0.400659 24983  7495   911   273
+10 2010-09     463 0.404367 24983  7495  1145   344
+11 2010-10     657 0.438878 24983  7495  1497   449
+12 2010-11     524 0.326073 24983  7495  1607   482
+13 2010-12     324 0.366102 24983  7495   885   266
+14 2011-01     262 0.353576 24983  7495   741   222
+15 2011-02     290 0.382586 24983  7495   758   227
+16 2011-03     304 0.312115 24983  7495   974   292
+17 2011-04     368 0.429907 24983  7495   856   257
+18 2011-05     410 0.388258 24983  7495  1056   317
+19 2011-06     365 0.368315 24983  7495   991   297
+20 2011-07     388 0.408851 24983  7495   949   285
+21 2011-08     425 0.454545 24983  7495   935   281
+22 2011-09     489 0.386256 24983  7495  1266   380
+23 2011-10     622 0.456012 24983  7495  1364   409
+24 2011-11     371 0.222823 24983  7495  1665   500
+25 total      9374 1        24983  7495 24983  7495</code></pre>
+</div>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 반올림 때문에 표본 층 크기가 n=7495 보다 1개 더 크므로 </span></span>
+<span><span class="co"># 2011년 11월 표본 크기를 한 개 줄여주자</span></span>
+<span><span class="va">df_target</span><span class="op">$</span><span class="va">nh</span><span class="op">[</span><span class="va">df_target</span><span class="op">$</span><span class="va">bsym</span><span class="op">==</span><span class="st">'2011-11'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">df_target</span><span class="op">$</span><span class="va">nh</span><span class="op">[</span><span class="va">df_target</span><span class="op">$</span><span class="va">bsym</span><span class="op">==</span><span class="st">'2011-11'</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이제 주어진 표본배분안에 따라 <code>bsym</code>별 30% 정도의 표본을 뽑아보겠습니다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">ord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">df_target</span><span class="op">$</span><span class="va">bsym</span><span class="op">)</span></span>
+<span><span class="va">units</span> <span class="op">&lt;-</span> <span class="fu">sampling</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sampling/man/strata.html">strata</a></span><span class="op">(</span><span class="va">df_all</span>, stratanames <span class="op">=</span> <span class="st">"bsym"</span>, size <span class="op">=</span> <span class="va">df_target</span><span class="op">$</span><span class="va">nh</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">24</span><span class="op">]</span>, method<span class="op">=</span><span class="st">"srswor"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_all_sample</span> <span class="op">&lt;-</span> <span class="va">df_all</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">units</span><span class="op">$</span><span class="va">ID_unit</span><span class="op">)</span></span>
+<span><span class="va">df_all_sample</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7495    3</code></pre>
+</div>
+</div>
+<p>이제 층화추출 후 표본 데이터 <code>df_all_sample</code>이 기존 모집단 데이터인 <code>df_all</code>의 <code>bsym</code> 별 <code>target</code>의 비율을 유지하는지 확인해 보겠습니다.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gt.rstudio.com/">gt</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jthomasmock/gtExtras">gtExtras</a></span><span class="op">)</span></span>
+<span><span class="va">df_tmp</span> <span class="op">&lt;-</span> <span class="va">df_all_sample</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">bsym</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html">reframe</a></span><span class="op">(</span>sum_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span>,</span>
+<span>          nh <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>   </span>
+<span><span class="va">df_tmp2</span> <span class="op">&lt;-</span> <span class="va">df_tmp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>target_ratio <span class="op">=</span> <span class="va">sum_y</span><span class="op">/</span><span class="va">nh</span>,</span>
+<span>         target_ratio_pop <span class="op">=</span> <span class="va">df_target</span><span class="op">$</span><span class="va">ratio</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">24</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">target_ratio</span>, <span class="va">target_ratio_pop</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">'name'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">bsym</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html">reframe</a></span><span class="op">(</span>target_ratio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_tmp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">df_tmp2</span>, by<span class="op">=</span><span class="st">'bsym'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://jthomasmock.github.io/gtExtras/reference/gt_theme_nytimes.html">gt_theme_nytimes</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"bsym별 target 비율"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://jthomasmock.github.io/gtExtras/reference/gt_plt_bar_stack.html">gt_plt_bar_stack</a></span><span class="op">(</span>column <span class="op">=</span> <span class="va">target_ratio</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"target_ratio"</span>, <span class="st">"target_ratio_pop"</span><span class="op">)</span>, palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"skyblue"</span>, <span class="st">"hotpink"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+
+<div id="uslucpqgry" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#uslucpqgry table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#uslucpqgry thead, #uslucpqgry tbody, #uslucpqgry tfoot, #uslucpqgry tr, #uslucpqgry td, #uslucpqgry th {
+  border-style: none;
+}
+
+#uslucpqgry p {
+  margin: 0;
+  padding: 0;
+}
+
+#uslucpqgry .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#uslucpqgry .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#uslucpqgry .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#uslucpqgry .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#uslucpqgry .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#uslucpqgry .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#uslucpqgry .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#uslucpqgry .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#uslucpqgry .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#uslucpqgry .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#uslucpqgry .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#uslucpqgry .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#uslucpqgry .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#uslucpqgry .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#uslucpqgry .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uslucpqgry .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#uslucpqgry .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#uslucpqgry .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#uslucpqgry .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uslucpqgry .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#uslucpqgry .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uslucpqgry .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#uslucpqgry .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+#uslucpqgry .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uslucpqgry .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#uslucpqgry .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uslucpqgry .gt_left {
+  text-align: left;
+}
+
+#uslucpqgry .gt_center {
+  text-align: center;
+}
+
+#uslucpqgry .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#uslucpqgry .gt_font_normal {
+  font-weight: normal;
+}
+
+#uslucpqgry .gt_font_bold {
+  font-weight: bold;
+}
+
+#uslucpqgry .gt_font_italic {
+  font-style: italic;
+}
+
+#uslucpqgry .gt_super {
+  font-size: 65%;
+}
+
+#uslucpqgry .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#uslucpqgry .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#uslucpqgry .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#uslucpqgry .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#uslucpqgry .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#uslucpqgry .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#uslucpqgry .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading">
+<td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="font-family: 'Libre Franklin'; font-weight: 800;">bsym별 target 비율</td>
+    </tr>
+<tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="bsym">bsym</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="sum_y">sum_y</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="nh">nh</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="<span style='color:skyblue'><b>target_ratio</b></span>||<span style='color:hotpink'><b>target_ratio_pop</b></span>">
+<span style="color:skyblue"><b>target_ratio</b></span>||<span style="color:hotpink"><b>target_ratio_pop</b></span>
+</th>
+    </tr>
+</thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2009-12</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">111</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">287</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="103.76" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="103.76" y="0.0000000000000018" width="94.67" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="51.88" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.387</text><text x="151.09" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.353</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-01</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">79</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">216</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="99.46" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="99.46" y="0.0000000000000018" width="98.96" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.73" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3657</text><text x="148.94" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3639</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-02</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">78</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">232</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="89.92" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="89.92" y="0.0000000000000018" width="108.50" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="44.96" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.336</text><text x="144.17" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.406</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-03</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">116</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">317</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="100.35" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="100.35" y="0.0000000000000018" width="98.07" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="50.18" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3659</text><text x="149.39" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3576</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-04</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">103</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">283</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="98.90" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="98.90" y="0.0000000000000018" width="99.52" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.45" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3640</text><text x="148.66" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3662</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-05</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">107</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">290</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="97.63" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="97.63" y="0.0000000000000018" width="100.80" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="48.81" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.369</text><text x="148.03" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.381</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-06</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">131</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">312</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="104.61" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="104.61" y="0.0000000000000018" width="93.82" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="52.30" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.420</text><text x="151.52" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.377</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-07</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">102</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">278</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="97.70" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="97.70" y="0.0000000000000018" width="100.72" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="48.85" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.367</text><text x="148.06" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.378</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-08</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">108</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">273</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="98.58" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="98.58" y="0.0000000000000018" width="99.84" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.29" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3956</text><text x="148.50" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.4007</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-09</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">141</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">344</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="99.88" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="99.88" y="0.0000000000000018" width="98.54" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.94" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.4099</text><text x="149.16" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.4044</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-10</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">189</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">449</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="97.14" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="97.14" y="0.0000000000000018" width="101.28" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="48.57" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.421</text><text x="147.78" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.439</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-11</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">166</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">482</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="101.92" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="101.92" y="0.0000000000000018" width="96.50" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="50.96" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.344</text><text x="150.17" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.326</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2010-12</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">120</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">266</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="109.53" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="109.53" y="0.0000000000000018" width="88.89" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="54.77" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.451</text><text x="153.98" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.366</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-01</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">77</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">222</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="98.26" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="98.26" y="0.0000000000000018" width="100.17" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.13" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3468</text><text x="148.34" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3536</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-02</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">84</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">227</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="97.56" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="97.56" y="0.0000000000000018" width="100.87" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="48.78" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.370</text><text x="147.99" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.383</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-03</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">91</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">292</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="99.14" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="99.14" y="0.0000000000000018" width="99.29" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.57" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="35.83px" lengthadjust="spacingAndGlyphs">0.31164</text><text x="148.78" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="35.83px" lengthadjust="spacingAndGlyphs">0.31211</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-04</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">123</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">257</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="104.53" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="104.53" y="0.0000000000000018" width="93.90" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="52.27" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.479</text><text x="151.48" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.430</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-05</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">121</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">317</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="98.37" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="98.37" y="0.0000000000000018" width="100.06" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.18" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3817</text><text x="148.40" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3883</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-06</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">110</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">297</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="99.49" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="99.49" y="0.0000000000000018" width="98.94" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.74" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3704</text><text x="148.96" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.3683</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-07</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">114</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">285</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="98.13" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="98.13" y="0.0000000000000018" width="100.30" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="49.06" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.4000</text><text x="148.28" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="30.72px" lengthadjust="spacingAndGlyphs">0.4089</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-08</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">136</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">281</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="102.32" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="102.32" y="0.0000000000000018" width="96.10" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="51.16" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.484</text><text x="150.37" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.455</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-09</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">138</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">380</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="96.15" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="96.15" y="0.0000000000000018" width="102.27" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="48.08" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.363</text><text x="147.29" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.386</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-10</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">196</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">409</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="101.67" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="101.67" y="0.0000000000000018" width="96.75" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="50.84" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.479</text><text x="150.05" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.456</text></g></svg>
+</td>
+</tr>
+<tr>
+<td headers="bsym" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">2011-11</td>
+<td headers="sum_y" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">117</td>
+<td headers="nh" class="gt_row gt_right" style="font-family: 'Source Sans Pro'; font-weight: 400;">499</td>
+<td headers="target_ratio" class="gt_row gt_center" style="font-family: 'Source Sans Pro'; font-weight: 400;">
+<!--?xml version='1.0' encoding='UTF-8' ?--><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="198.43pt" height="14.17pt" viewbox="0 0 198.43 14.17"><defs><style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style></defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs><clippath id="cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw=="><rect x="0.00" y="0.00" width="198.43" height="14.17"></rect></clippath></defs><g clip-path="url(#cpMC4wMHwxOTguNDN8MC4wMHwxNC4xNw==)"><rect x="0.00" y="0.0000000000000018" width="101.74" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #87CEEB;"></rect><rect x="101.74" y="0.0000000000000018" width="96.69" height="14.17" style="stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF69B4;"></rect><text x="50.87" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.234</text><text x="150.08" y="9.52" text-anchor="middle" style="font-size: 8.54px;fill: #FFFFFF; font-family: &quot;Arial&quot;;" textlength="25.60px" lengthadjust="spacingAndGlyphs">0.223</text></g></svg>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 표본 전체 target ratio: 38.1%</span></span>
+<span><span class="co"># 모집단 전체 target ratio: 37.5%</span></span>
+<span><span class="va">df_all_sample</span><span class="op">$</span><span class="va">target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3813209</code></pre>
+</div>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_all</span><span class="op">$</span><span class="va">target</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3752151</code></pre>
+</div>
+</div>
+<p>이렇게 구성한 <code>df_all_sample</code> 데이터를 가지고 Data Mart를 만드는 과정을 다음 포스팅에서 다루겠습니다.</p>
 
 
-</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

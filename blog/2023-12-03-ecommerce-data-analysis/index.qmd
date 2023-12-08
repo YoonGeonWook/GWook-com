@@ -6,6 +6,8 @@ date: Sys.Date()
 categories: [machine learning, statistics]
 image: ecommerce.jpg
 preview-links: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -27,7 +29,7 @@ pre code, pre, code {
 
 ![문제해결 프로세스 7단계](seven-step-problem-solving-process.png){#fig-1}
 
-## 01. 문제해결 프로세스 기획{#sec-1}
+# 01. 문제해결 프로세스 기획{#sec-1}
 
 패스트캠퍼스 강의 중 박지환 강사님께서 준비 해주신 이커머스 데이터 분석 예제를 참고하여 진행하였습니다. 주어진 문제의 시나리오는 아래와 같습니다.
 
@@ -91,13 +93,13 @@ A사는 현재 '① 신규교객 유입 활동'은 마케팅 비용을 투자하
 
 현재 Step 1~4의 단계가 완료되어 **데이터 분석을 수행**해야 하는 단계라고 간주하겠습니다. 
 
-## 02. Data Readiness Check & Sampling
+# 02. Data Readiness Check & Sampling
 
 사용하고자 하는 데이터는 [UCI Machine Learning Repository](https://archive.ics.uci.edu/)에서 제공하는 [Online Retail](https://archive.ics.uci.edu/datasets?search=Online+Retail) 데이터를 사용해 진행했습니다. 
 
 이 Online Retail 데이터를 A사에서 수집한 고객 거래 이력 데이터로 간주하고 해당 데이터에 대한 기본적인 전처리를 수행하겠습니다.
 
-### 02-01. Data Info Check
+## 02-01. Data Info Check
 
 주어진 데이터는 e-commerce 온라인 구매 데이터로 데이터 명세표는 아래와 같습니다.
 
@@ -161,3 +163,209 @@ df %>% filter(Quantity < 0)
 df <- df %>% filter(Quantity > 0)
 ```
 
+#### **중복 데이터 확인**
+
+```{r}
+df %>% 
+  mutate(duplicated = duplicated(.)) %>% 
+  count(duplicated)
+
+# 중복 데이터 확인
+df %>% 
+  filter(duplicated(df) | duplicated(df, fromLast = TRUE))
+```
+26,125개의 데이터가 중복되었음을 확인할 수 있습니다. 데이터의 정확성과 품질을 위해 중복 데이터를 삭제하겠습니다.
+
+```{r}
+# 중복 삭제 후 재확인
+df <- df %>% distinct()
+df %>% 
+  mutate(duplicated = duplicated(.)) %>% 
+  count()
+```
+
+이렇게 데이터에 대한 기본적인 정보와 전처리를 마치고 데이터의 형태를 보면 아래와 같이 기존 1,067,370개의 행에서 779,494개의 행으로 줄었습니다.
+```{r}
+# 1,067,370 → 779,494
+df %>% dim()
+```
+
+
+## 02-03. Data Readiness Check
+
+데이터에 대한 기본 정보를 확인했으니 이제 현재 가지고 있는 데이터로 앞서 기획한 문제해결 프로세스를 적용할 수 있는지 점검해야 합니다.
+
+### (1) Target Label 생성
+
+당월 구매 고객이 다음 달에 재구매 시 해당 고객을 재구매 고객으로 정의하겠습니다. 예를들어, 2011년 01월에 구매한 고객이 2011년 02월에 구매를 한다면 해당 고객을 재구매 고객으로 정의하는 것입니다.
+
+```{r}
+library(lubridate)
+
+# 기준년월 변수 생성: bsym - %Y-%m 형식
+df <- df %>% mutate(bsym = format(InvoiceDate, "%Y-%m")) 
+# 원본 데이터 저장: df_origin
+df_origin <- df
+# 데이터 적재 기간 확인: 2009-12-01 ~ 2011-12-09 (약 2년)
+min(df$InvoiceDate); max(df$InvoiceDate)
+```
+
+기본적인 전처리가 완료된 데이터를 `df_origin`으로 저장하여 보존하고, 이후 있을 전처리를 진행하겠습니다. Target label은 기준년월(`bsym`)과 고객(`CustomerID`)에만 영향을 받으므로 해당 두 변수를 고유하게 갖는 데이터로 재구성하겠습니다.
+
+```{r}
+df <- df %>% distinct(bsym, CustomerID)
+df %>% dim()
+df %>% head()
+```
+
+2009년 12월부터 2011년 12월까지 연도 및 월(`bsym`)별로 당월 구매 고객이 내월 구매 고객일 경우 1을 갖는 `target` 변수(binary: 0,1)를 만들어 보겠습니다. 
+
+```{r}
+# 주어진 bsym에 구매 고객이 내월 구매 고객일 경우 1, 그렇지 않으면 0 값을 갖는 
+# target 변수 생성: process_bsym()
+process_bsym <- function(bsym_value, df) {
+  df_left <- filter(df, bsym == bsym_value)
+  bsym_1m <- ymd(paste0(bsym_value, "-01")) %m+% months(1) %>% format("%Y-%m")
+  df_right <- df %>% 
+    filter(bsym == bsym_1m) %>% 
+    distinct(CustomerID) %>% 
+    mutate(target = 1)
+  
+  df_merge <- left_join(df_left, df_right, by = "CustomerID") %>% 
+    mutate(target = ifelse(is.na(target), 0, target))
+  
+  return(df_merge)
+}
+
+# 모든 bsym 값에 대해 process_bsym 함수 적용
+df_all <- map_df(unique(df$bsym), ~process_bsym(.x, df))
+df_all %>% head()
+```
+
+### (2) Target Ratio 확인
+
+연도 및 월별로 재구매 고객 여부 변수 `target`의 비율을 확인해 보겠습니다.
+
+```{r}
+# 기준년월 기준 Target ratio 확인
+options(pillar.sigfig = 6)
+df_target <- df_all %>% 
+  group_by(bsym) %>% 
+  reframe(total_y = sum(target),
+          count_y = n(),
+          ratio = total_y/count_y) 
+df_target %>% 
+  print(n =  nrow(.))
+```
+
+현재 주어진 데이터는 2011년 12월이 마지막이기 때문에 내월이 없는 2011년 12월은 `target` 변수가 1 값을 가질 수 없습니다. 따라서 분석 대상에서 제외시키겠습니다.
+
+```{r}
+df_target <- df_target %>% filter(bsym != '2011-12')
+df_all <- df_all %>% filter(bsym != '2011-12')
+df_target %>% 
+  print(n = nrow(.))
+df_target$ratio %>% summary()
+```
+
+연도 및 월(`bsym`)별 `target`의 비율은 22.3% ~ 45.6%의 값을 가지며, 대부분의 월에서 36% ~ 40% 정도의 비율을 갖습니다. 전체 데이터의 `target`의 비율을 보면 아래와 같이 약 37.5% 정도의 내달 재구매 비율을 갖습니다. 이 정도의 class imbalance에 대해서는 over-sampling을 하지 않고 분석을 진행해도 괜찮을 것 같습니다.
+
+```{r}
+df_all$target %>% mean()
+```
+
+```{r}
+# 마지막 행에 합계 추가
+df_target <- df_target %>% 
+  bind_rows(
+    tibble(bsym = "total",
+           total_y = sum(.$total_y),
+           count_y = sum(.$count_y),
+           ratio = 1)  
+)
+```
+
+
+# 03. Data Sampling
+
+![층화추출법](stratified-sampling.png){#fig-2}
+
+현재 `df_all`에는 약 25,000건의 데이터가 있지만, 만일 데이터가 1억건 정도로 매우 큰 경우 모델링을 하기엔 부담스러울 수 있습니다. 이럴 경우를 대비해 해당 데이터를 모집단으로 간주하고 샘플링을 통해 데이터를 줄일 수 있습니다. 
+
+## 03-01. Under-sampling: Stratified sampling
+
+관심 변수(`target`)에 대해 함께 살펴보고 싶은 변수가 있을 시(여기선 `bsym`), 해당 변수를 층화 변수로 두어 층화추출법(stratified sampling)을 실시할 수 있습니다. 샘플링 기법 중 하나인 층화추출법은 모집단을 층화 변수로 나눈 후 각 층/소집단 별로 독립적으로 표본을 뽑는 샘플링 방법입니다. 이로 인해 모집단 데이터에서 층화 변수와 관심 변수가 갖는 관계를 표본 데이터에서도 유지할 수 있다는 장점이 있습니다. 즉, 표본의 대표성을 확보할 수 있는 방법입니다. 
+
+현재 `df_all` 데이터를 모집단 데이터로 간주하고, 표본 데이터를 뽑고자 합니다. 이때 층화추출법을 사용하기 위해선 우선적으로 각 층(`bsym`)별 표본 크기가 주어져야 합니다. 이 과정을 표본 배분(sample allocation)이라고 합니다. 여기에서는 모집단 `df_all`의 `bsym`별 층 크기를 유지하기 위해 비례 배분(proportional allocation)을 사용하겠습니다. 비례 배분에 따른 표본 데이터의 표본 층 크기는 아래와 같습니다.
+
+$$ 
+n_h = n\times\frac{N_h}{\sum_{l=1}^HN_l}
+$$
+
+`df_all` 데이터의 30%만 샘플링한다고 하겠습니다. 그럴 경우 필요한 층(`bsym`)별 표본 크기(`nh`)는 아래와 같습니다.
+
+```{r}
+# 전체 데이터의 30%: 7495개
+round(nrow(df_all) * 0.3)
+
+# 모집단 층 크기: Nh, 표본 층 크기: nh
+df_target <- df_target %>% 
+  mutate(N = nrow(df_all)) %>% 
+  mutate(n = round(nrow(df_all) * 0.3)) %>% 
+  relocate(count_y, .after = n) %>% 
+  rename(Nh = count_y) %>% 
+  mutate(nh = round(n*Nh/N)) %>% 
+  group_by(bsym)
+
+df_target %>% print(n=25)
+
+# 반올림 때문에 표본 층 크기가 n=7495 보다 1개 더 크므로 
+# 2011년 11월 표본 크기를 한 개 줄여주자
+df_target$nh[df_target$bsym=='2011-11'] <- df_target$nh[df_target$bsym=='2011-11'] - 1
+```
+
+이제 주어진 표본배분안에 따라 `bsym`별 30% 정도의 표본을 뽑아보겠습니다.
+
+```{r}
+set.seed(123)
+ord <- unique(df_target$bsym)
+units <- sampling::strata(df_all, stratanames = "bsym", size = df_target$nh[1:24], method="srswor")
+
+df_all_sample <- df_all %>% 
+  slice(units$ID_unit)
+df_all_sample %>% dim()
+```
+
+이제 층화추출 후 표본 데이터 `df_all_sample`이 기존 모집단 데이터인 `df_all`의 `bsym` 별 `target`의 비율을 유지하는지 확인해 보겠습니다.
+
+```{r}
+#| code-fold: true
+#| warning: false
+library(gt)
+library(gtExtras)
+df_tmp <- df_all_sample %>% 
+  group_by(bsym) %>% 
+  reframe(sum_y = sum(target),
+          nh = n())
+   
+df_tmp2 <- df_tmp %>% 
+  mutate(target_ratio = sum_y/nh,
+         target_ratio_pop = df_target$ratio[1:24]) %>% 
+  pivot_longer(cols=c(target_ratio, target_ratio_pop), names_to = 'name') %>% 
+  group_by(bsym) %>% 
+  reframe(target_ratio = list(value))
+df_tmp %>% left_join(df_tmp2, by='bsym') %>% 
+  gt() %>% 
+  gt_theme_nytimes() %>% 
+  tab_header(title = "bsym별 target 비율") %>% 
+  gt_plt_bar_stack(column = target_ratio, labels = c("target_ratio", "target_ratio_pop"), palette = c("skyblue", "hotpink"))
+```
+
+```{r}
+# 표본 전체 target ratio: 38.1%
+# 모집단 전체 target ratio: 37.5%
+df_all_sample$target %>% mean()
+df_all$target %>% mean()
+```
+
+이렇게 구성한 `df_all_sample` 데이터를 가지고 Data Mart를 만드는 과정을 다음 포스팅에서 다루겠습니다.

@@ -22,7 +22,7 @@ website:
     background: light
     right:
       - text: Blog
-        file: blog/index.qmd
+        file: index.qmd
       - text: About
         file: about/index.qmd
       - icon: github
@@ -47,7 +47,4 @@ format:
     footnotes-hover: true
     fontsize: 1em
     link-external-newwindow: true
-    
-
-editor: visual
 
