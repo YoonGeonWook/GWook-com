@@ -10,7 +10,499 @@
 <atom:link href="https://gwook.blog/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Invalid Date</lastBuildDate>
+<lastBuildDate>Fri, 08 Dec 2023 15:00:00 GMT</lastBuildDate>
+<item>
+  <title>E-commerce 데이터 분석 (2)</title>
+  <link>https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/index.html</link>
+  <description><![CDATA[ <div class="cell" data-hash="index_cache/html/unnamed-chunk-1_d6391533e9010c7deed686989a0593de">
+<style type="text/css">
+pre code, pre, code {
+  <!-- white-space: pre !important; -->
+  overflow-x: scroll !important;
+  <!-- word-break: keep-all !important; -->
+  <!-- word-wrap: initial !important; -->
+}
+</style>
+</div>
+<p>본 포스팅은 패스트캠퍼스 <a href="https://fastcampus.co.kr/data_online_msignature">50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐</a>의 강의내용을 바탕으로 참고하여 작성하였습니다.</p>
+<p>앞서 <a href="https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/">E-commerce 데이터 분석 (1)</a>에서 A사가 운영하는 이커머스 플랫폼의 ②유입 고객 재구매를 촉진시키기 위해 7단계의 문제해결 프로세스를 정의했으며, Step 5의 데이터 분석 단계에 필요한 과정을 진행했습니다.</p>
+<section id="sec-3" class="level1 page-columns page-full"><h1>03. Data Mart &amp; Feature Engineering</h1>
+<section id="data-mart-기획-및-설계" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="data-mart-기획-및-설계">03-01. Data Mart 기획 및 설계</h2>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full"><p><img src="https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/data-mart.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption margin-caption">모델링을 위한 Data Mart 기획</figcaption></figure>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_ee731af9abfd8e3795e30c6f5185c8da">
+
+</div>
+<p>고객 24,983명에 대한 거래 이력이 총 78만 건 정도였고, 이를 고객 데이터셋을 Undersampling 하여 추출한 분석 대상이 7,495명의 고객 데이터인 상황입니다. UCI Machine Learning Repository의 Online Retail 데이터를 Data Warehouse에서 가져온 데이터이고, 이를 이용해 고객별 구매 이력에 대한 Data Mart를 구성하려고 합니다. 이제 여러 가설을 세워 재구매 여부 <code>target</code>에 영향을 미치는 여러 변수(features)를 만들어 보겠습니다. 아래는 Data Mart를 구성하는 여러 feature 에 대한 설명과 로직이 작성되어 있는 Data Mart 기획서입니다.</p>
+<div id="fig-1" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full"><p><img src="https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/data-mart-desc.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption margin-caption">Figure&nbsp;1: Data Mart 기획서</figcaption></figure>
+</div>
+</section><section id="data-추출-및-mart-개발" class="level2"><h2 class="anchored" data-anchor-id="data-추출-및-mart-개발">03-02. Data 추출 및 Mart 개발</h2>
+<p>기본적인 전처리가 끝난 후 데이터를 <code>df_origin</code>로 저장되어 있습니다. 샘플링한 표본 데이터를 대상으로 Mart를 구성하기 위해서, 우선 <code>df_origin</code>과 표본 데이터 <code>df_all_sample</code>에 <code>bsym</code>과 <code>CustomerID</code>를 조합해 key 변수를 만들어 보겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_242de3b3b3668e22623ee29fb513b4df">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 9
+  InvoiceNo StockCode Description                           Quantity InvoiceDate         UnitPrice CustomerID Country        bsym   
+  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                                    &lt;int&gt; &lt;dttm&gt;                  &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;  
+1 489434    85048     "15CM CHRISTMAS GLASS BALL 20 LIGHTS"       12 2009-12-01 07:45:00      6.95 13085      United Kingdom 2009-12
+2 489434    79323P    "PINK CHERRY LIGHTS"                        12 2009-12-01 07:45:00      6.75 13085      United Kingdom 2009-12
+3 489434    79323W    "WHITE CHERRY LIGHTS"                       12 2009-12-01 07:45:00      6.75 13085      United Kingdom 2009-12
+4 489434    22041     "RECORD FRAME 7\" SINGLE SIZE"              48 2009-12-01 07:45:00      2.1  13085      United Kingdom 2009-12
+5 489434    21232     "STRAWBERRY CERAMIC TRINKET BOX"            24 2009-12-01 07:45:00      1.25 13085      United Kingdom 2009-12
+6 489434    22064     "PINK DOUGHNUT TRINKET POT"                 24 2009-12-01 07:45:00      1.65 13085      United Kingdom 2009-12</code></pre>
+</div>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_all_sample</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  bsym    CustomerID target
+  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
+1 2009-12 12682           1
+2 2009-12 15413           1
+3 2009-12 16321           0
+4 2009-12 15712           1
+5 2009-12 17700           1
+6 2009-12 14911           1</code></pre>
+</div>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># df_origin에 key 변수 생성</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>key <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_c</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bsym</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">CustomerID</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reframe</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>n_key <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n_distinct</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">key</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  n_key
+  &lt;int&gt;
+1 25598</code></pre>
+</div>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># df_all_sample에 key 변수 생성</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_all_sample</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_all_sample</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>key <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_c</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bsym</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">CustomerID</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_all_sample</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reframe</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>n_key <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n_distinct</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">key</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  n_key
+  &lt;int&gt;
+1  7495</code></pre>
+</div>
+</div>
+<p>이제 <code>df_origin</code>의 <code>key</code>를 이용해 <code>df_all_sample</code>에 존재하는 행들만 가져와 <code>df_origin_sample</code> 이라는 데이터를 만듭니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_b1e55054feb0e2e8a3a265934d2a2418">
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin_sample</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">key</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_all_sample</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">key</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># df_origin과 df_origin_sample의 비율: 대략 30% 정도</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin_sample</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2947758</code></pre>
+</div>
+</div>
+<section id="mart-구성" class="level3"><h3 class="anchored" data-anchor-id="mart-구성">Mart 구성</h3>
+<section id="구매금액" class="level4"><h4 class="anchored" data-anchor-id="구매금액"><strong>구매금액</strong></h4>
+<p>Mart 기획서의 첫 번째 <strong>구매금액</strong> 관련 3개의 변수를 만들기 위해 <code>StockCode</code> 당 구매금액을 나타내는 변수 <code>amt</code>를 <code>UnitPrice * Quantity</code>로 정의하겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_f0de53162d75ab97c06416286b0a36b4">
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 1. 구매금액 amt 관련 변수 , max_amt, min_amt</span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## 1) total_amt: 당월 총 구매금액</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_mart</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin_sample</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>amt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">UnitPrice</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Quantity</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bsym</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">CustomerID</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reframe</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>total_amt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">amt</span>, na.rm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">## 2) max_amt, min_amt: 당월 송장당 최대/최소 구매금액</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_mart</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_mart</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">left_join</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_origin_sample</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>amt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">UnitPrice</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Quantity</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bsym</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">CustomerID</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">InvoiceNo</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reframe</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>amt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">amt</span>, na.rm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bsym</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">CustomerID</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reframe</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>max_amt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">amt</span>, na.rm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>          min_amt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">amt</span>, na.rm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  by <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bsym"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"CustomerID"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df_mart</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7,495 × 5
+   bsym    CustomerID total_amt max_amt min_amt
+   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+ 1 2009-12 12437          578.    578.    578. 
+ 2 2009-12 12523           74.6    74.6    74.6
+ 3 2009-12 12539         5149.   2583.   2566. 
+ 4 2009-12 12557         1953.   1953.   1953. 
+ 5 2009-12 12664          549.    549.    549. 
+ 6 2009-12 12681         1015.   1015.   1015. 
+ 7 2009-12 12682         1073.    508.    139. 
+ 8 2009-12 12709         1413.   1197.    216  
+ 9 2009-12 12712          334.    334.    334. 
+10 2009-12 12747         1032     381.    303. 
+# ℹ 7,485 more rows</code></pre>
+</div>
+</div>
+
+
+</section></section></section></section> ]]></description>
+  <category>machine learning</category>
+  <category>statistics</category>
+  <guid>https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/index.html</guid>
+  <pubDate>Fri, 08 Dec 2023 15:00:00 GMT</pubDate>
+  <media:content url="https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/ecommerce2.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>E-commerce 데이터 분석 (1)</title>
   <link>https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/index.html</link>
@@ -94,7 +586,7 @@ pre code, pre, code {
 </div>
 </div>
 <p>현재 Step 1~4의 단계가 완료되어 <strong>데이터 분석을 수행</strong>해야 하는 단계라고 간주하겠습니다.</p>
-</section><section id="data-readiness-check-sampling" class="level1"><h1>02. Data Readiness Check &amp; Sampling</h1>
+</section><section id="sec-2" class="level1 page-columns page-full"><h1>02. Data Readiness Check &amp; Sampling</h1>
 <p>사용하고자 하는 데이터는 <a href="https://archive.ics.uci.edu/">UCI Machine Learning Repository</a>에서 제공하는 <a href="https://archive.ics.uci.edu/datasets?search=Online+Retail">Online Retail</a> 데이터를 사용해 진행했습니다.</p>
 <p>이 Online Retail 데이터를 A사에서 수집한 고객 거래 이력 데이터로 간주하고 해당 데이터에 대한 기본적인 전처리를 수행하겠습니다.</p>
 <section id="data-info-check" class="level2"><h2 class="anchored" data-anchor-id="data-info-check">02-01. Data Info Check</h2>
@@ -1318,13 +1810,13 @@ font-style: inherit;">)</span>  </span>
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 </div>
-</section></section></section><section id="data-sampling" class="level1 page-columns page-full"><h1>03. Data Sampling</h1>
+</section></section><section id="data-sampling" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="data-sampling">02-03. Data Sampling</h2>
 <div id="fig-2" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full"><p><img src="https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/stratified-sampling.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption margin-caption">Figure&nbsp;2: 층화추출법</figcaption></figure>
 </div>
 <p>현재 <code>df_all</code>에는 약 25,000건의 데이터가 있지만, 만일 데이터가 1억건 정도로 매우 큰 경우 모델링을 하기엔 부담스러울 수 있습니다. 이럴 경우를 대비해 해당 데이터를 모집단으로 간주하고 샘플링을 통해 데이터를 줄일 수 있습니다.</p>
-<section id="under-sampling-stratified-sampling" class="level2"><h2 class="anchored" data-anchor-id="under-sampling-stratified-sampling">03-01. Under-sampling: Stratified sampling</h2>
+<section id="under-sampling-stratified-sampling" class="level3"><h3 class="anchored" data-anchor-id="under-sampling-stratified-sampling">Under-sampling: Stratified sampling</h3>
 <p>관심 변수(<code>target</code>)에 대해 함께 살펴보고 싶은 변수가 있을 시(여기선 <code>bsym</code>), 해당 변수를 층화 변수로 두어 층화추출법(stratified sampling)을 실시할 수 있습니다. 샘플링 기법 중 하나인 층화추출법은 모집단을 층화 변수로 나눈 후 각 층/소집단 별로 독립적으로 표본을 뽑는 샘플링 방법입니다. 이로 인해 모집단 데이터에서 층화 변수와 관심 변수가 갖는 관계를 표본 데이터에서도 유지할 수 있다는 장점이 있습니다. 즉, 표본의 대표성을 확보할 수 있는 방법입니다.</p>
 <p>현재 <code>df_all</code> 데이터를 모집단 데이터로 간주하고, 표본 데이터를 뽑고자 합니다. 이때 층화추출법을 사용하기 위해선 우선적으로 각 층(<code>bsym</code>)별 표본 크기가 주어져야 합니다. 이 과정을 표본 배분(sample allocation)이라고 합니다. 여기에서는 모집단 <code>df_all</code>의 <code>bsym</code>별 층 크기를 유지하기 위해 비례 배분(proportional allocation)을 사용하겠습니다. 비례 배분에 따른 표본 데이터의 표본 층 크기는 아래와 같습니다.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0An_h%20=%20n%5Ctimes%5Cfrac%7BN_h%7D%7B%5Csum_%7Bl=1%7D%5EHN_l%7D%0A"></p>
@@ -1940,6 +2432,7 @@ font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 </details><div class="cell-output-display">
+<div id="tbl-1" class="anchored">
 
 <div id="uslucpqgry" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
@@ -2385,7 +2878,8 @@ font-style: inherit;">)</span></span></code></pre></div>
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
+<caption>Table&nbsp;1:  <p>연도 및 월별 재구매 비율: 표본 vs 모집단</p> </caption>
+  <thead>
 <tr class="gt_heading">
 <td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="font-family: 'Libre Franklin'; font-weight: 800;">bsym별 target 비율</td>
     </tr>
@@ -2596,6 +3090,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
+</div>
 <div class="cell">
 <div class="sourceCode" id="cb50" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -2643,11 +3138,11 @@ font-style: inherit;">)</span></span></code></pre></div>
 <p>이렇게 구성한 <code>df_all_sample</code> 데이터를 가지고 Data Mart를 만드는 과정을 다음 포스팅에서 다루겠습니다.</p>
 
 
-</section></section> ]]></description>
+</section></section></section> ]]></description>
   <category>machine learning</category>
   <category>statistics</category>
   <guid>https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/index.html</guid>
-  <pubDate>Invalid Date</pubDate>
+  <pubDate>Sat, 02 Dec 2023 15:00:00 GMT</pubDate>
   <media:content url="https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/ecommerce.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>

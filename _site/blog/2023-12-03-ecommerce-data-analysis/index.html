@@ -5,6 +5,7 @@
 <meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Yoon GeonWook">
+<meta name="dcterms.date" content="2023-12-03">
 <meta name="description" content="UCI Machine Learning Repository: Online Retail Dataset">
 <title>GeonWook - E-commerce 데이터 분석 (1)</title>
 <style>
@@ -157,7 +158,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">Invalid Date</p>
+        <p class="date">December 3, 2023</p>
       </div>
     </div>
     
@@ -172,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
 <li><a href="#sec-1" id="toc-sec-1" class="nav-link active" data-scroll-target="#sec-1">01. 문제해결 프로세스 기획</a></li>
   <li>
-<a href="#data-readiness-check-sampling" id="toc-data-readiness-check-sampling" class="nav-link" data-scroll-target="#data-readiness-check-sampling">02. Data Readiness Check &amp; Sampling</a>
+<a href="#sec-2" id="toc-sec-2" class="nav-link" data-scroll-target="#sec-2">02. Data Readiness Check &amp; Sampling</a>
   <ul class="collapse">
 <li><a href="#data-info-check" id="toc-data-info-check" class="nav-link" data-scroll-target="#data-info-check">02-01. Data Info Check</a></li>
   <li>
@@ -182,12 +183,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#target-ratio-%ED%99%95%EC%9D%B8" id="toc-target-ratio-확인" class="nav-link" data-scroll-target="#target-ratio-%ED%99%95%EC%9D%B8">(2) Target Ratio 확인</a></li>
   </ul>
 </li>
+  <li>
+<a href="#data-sampling" id="toc-data-sampling" class="nav-link" data-scroll-target="#data-sampling">02-03. Data Sampling</a>
+  <ul class="collapse">
+<li><a href="#under-sampling-stratified-sampling" id="toc-under-sampling-stratified-sampling" class="nav-link" data-scroll-target="#under-sampling-stratified-sampling">Under-sampling: Stratified sampling</a></li>
   </ul>
 </li>
-  <li>
-<a href="#data-sampling" id="toc-data-sampling" class="nav-link" data-scroll-target="#data-sampling">03. Data Sampling</a>
-  <ul class="collapse">
-<li><a href="#under-sampling-stratified-sampling" id="toc-under-sampling-stratified-sampling" class="nav-link" data-scroll-target="#under-sampling-stratified-sampling">03-01. Under-sampling: Stratified sampling</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/YoonGeonWook/GWook-com/blob/main/blog/2023-12-03-ecommerce-data-analysis/index.qmd" class="toc-action">View source</a></p><p><a href="https://github.com/YoonGeonWook/GWook-com/edit/main/blog/2023-12-03-ecommerce-data-analysis/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/YoonGeonWook/GWook-com/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -276,7 +277,7 @@ pre code, pre, code {
 </div>
 </div>
 <p>현재 Step 1~4의 단계가 완료되어 <strong>데이터 분석을 수행</strong>해야 하는 단계라고 간주하겠습니다.</p>
-</section><section id="data-readiness-check-sampling" class="level1"><h1>02. Data Readiness Check &amp; Sampling</h1>
+</section><section id="sec-2" class="level1 page-columns page-full"><h1>02. Data Readiness Check &amp; Sampling</h1>
 <p>사용하고자 하는 데이터는 <a href="https://archive.ics.uci.edu/">UCI Machine Learning Repository</a>에서 제공하는 <a href="https://archive.ics.uci.edu/datasets?search=Online+Retail">Online Retail</a> 데이터를 사용해 진행했습니다.</p>
 <p>이 Online Retail 데이터를 A사에서 수집한 고객 거래 이력 데이터로 간주하고 해당 데이터에 대한 기본적인 전처리를 수행하겠습니다.</p>
 <section id="data-info-check" class="level2"><h2 class="anchored" data-anchor-id="data-info-check">02-01. Data Info Check</h2>
@@ -652,13 +653,13 @@ $ Country     &lt;chr&gt; "United Kingdom", "United Kingdom", "United Kingdom", 
 <span>           ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>  </span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section></section></section><section id="data-sampling" class="level1 page-columns page-full"><h1>03. Data Sampling</h1>
+</section></section><section id="data-sampling" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="data-sampling">02-03. Data Sampling</h2>
 <div id="fig-2" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full"><p><img src="stratified-sampling.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption margin-caption">Figure&nbsp;2: 층화추출법</figcaption></figure>
 </div>
 <p>현재 <code>df_all</code>에는 약 25,000건의 데이터가 있지만, 만일 데이터가 1억건 정도로 매우 큰 경우 모델링을 하기엔 부담스러울 수 있습니다. 이럴 경우를 대비해 해당 데이터를 모집단으로 간주하고 샘플링을 통해 데이터를 줄일 수 있습니다.</p>
-<section id="under-sampling-stratified-sampling" class="level2"><h2 class="anchored" data-anchor-id="under-sampling-stratified-sampling">03-01. Under-sampling: Stratified sampling</h2>
+<section id="under-sampling-stratified-sampling" class="level3"><h3 class="anchored" data-anchor-id="under-sampling-stratified-sampling">Under-sampling: Stratified sampling</h3>
 <p>관심 변수(<code>target</code>)에 대해 함께 살펴보고 싶은 변수가 있을 시(여기선 <code>bsym</code>), 해당 변수를 층화 변수로 두어 층화추출법(stratified sampling)을 실시할 수 있습니다. 샘플링 기법 중 하나인 층화추출법은 모집단을 층화 변수로 나눈 후 각 층/소집단 별로 독립적으로 표본을 뽑는 샘플링 방법입니다. 이로 인해 모집단 데이터에서 층화 변수와 관심 변수가 갖는 관계를 표본 데이터에서도 유지할 수 있다는 장점이 있습니다. 즉, 표본의 대표성을 확보할 수 있는 방법입니다.</p>
 <p>현재 <code>df_all</code> 데이터를 모집단 데이터로 간주하고, 표본 데이터를 뽑고자 합니다. 이때 층화추출법을 사용하기 위해선 우선적으로 각 층(<code>bsym</code>)별 표본 크기가 주어져야 합니다. 이 과정을 표본 배분(sample allocation)이라고 합니다. 여기에서는 모집단 <code>df_all</code>의 <code>bsym</code>별 층 크기를 유지하기 위해 비례 배분(proportional allocation)을 사용하겠습니다. 비례 배분에 따른 표본 데이터의 표본 층 크기는 아래와 같습니다.</p>
 <p><span class="math display">\[
@@ -750,6 +751,7 @@ n_h = n\times\frac{N_h}{\sum_{l=1}^HN_l}
 <span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"bsym별 target 비율"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://jthomasmock.github.io/gtExtras/reference/gt_plt_bar_stack.html">gt_plt_bar_stack</a></span><span class="op">(</span>column <span class="op">=</span> <span class="va">target_ratio</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"target_ratio"</span>, <span class="st">"target_ratio_pop"</span><span class="op">)</span>, palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"skyblue"</span>, <span class="st">"hotpink"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
+<div id="tbl-1" class="anchored">
 
 <div id="uslucpqgry" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
@@ -1195,7 +1197,8 @@ n_h = n\times\frac{N_h}{\sum_{l=1}^HN_l}
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
+<caption>Table&nbsp;1:  <p>연도 및 월별 재구매 비율: 표본 vs 모집단</p> </caption>
+  <thead>
 <tr class="gt_heading">
 <td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="font-family: 'Libre Franklin'; font-weight: 800;">bsym별 target 비율</td>
     </tr>
@@ -1406,6 +1409,7 @@ n_h = n\times\frac{N_h}{\sum_{l=1}^HN_l}
 </div>
 </div>
 </div>
+</div>
 <div class="cell">
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 표본 전체 target ratio: 38.1%</span></span>
 <span><span class="co"># 모집단 전체 target ratio: 37.5%</span></span>
@@ -1421,7 +1425,7 @@ n_h = n\times\frac{N_h}{\sum_{l=1}^HN_l}
 <p>이렇게 구성한 <code>df_all_sample</code> 데이터를 가지고 Data Mart를 만드는 과정을 다음 포스팅에서 다루겠습니다.</p>
 
 
-</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

@@ -1,0 +1,116 @@
+---
+title: "E-commerce 데이터 분석 (2)"
+description: |
+  Data Mart 구성 및 Feature Engineering
+date: 2023-12-08
+categories: [machine learning, statistics]
+image: ecommerce2.png
+preview-links: true
+execute: 
+  cache: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set()
+options(width=200)
+```
+
+```{css, echo=FALSE}
+pre code, pre, code {
+  <!-- white-space: pre !important; -->
+  overflow-x: scroll !important;
+  <!-- word-break: keep-all !important; -->
+  <!-- word-wrap: initial !important; -->
+}
+```
+
+본 포스팅은 패스트캠퍼스 [50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐](https://fastcampus.co.kr/data_online_msignature)의 강의내용을 바탕으로 참고하여 작성하였습니다.
+
+앞서 [E-commerce 데이터 분석 (1)](https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/)에서 A사가 운영하는 이커머스 플랫폼의 ②유입 고객 재구매를 촉진시키기 위해 7단계의 문제해결 프로세스를 정의했으며, Step 5의 데이터 분석 단계에 필요한 과정을 진행했습니다.
+
+# 03. Data Mart & Feature Engineering {#sec-3}
+
+## 03-01. Data Mart 기획 및 설계
+
+![모델링을 위한 Data Mart 기획](data-mart.png)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+pacman::p_load(tidyverse, lubridate, gt, gtExtras)
+data <- readRDS("../../_data/e-commerce-data-analysis/part1.rds")
+df_origin <- data$df_origin
+df_all <- data$df_all
+df_all_sample <- data$df_all_sample
+df_target <- data$df_target
+rm(data)
+```
+
+고객 24,983명에 대한 거래 이력이 총 78만 건 정도였고, 이를 고객 데이터셋을 Undersampling 하여 추출한 분석 대상이 7,495명의 고객 데이터인 상황입니다. UCI Machine Learning Repository의 Online Retail 데이터를 Data Warehouse에서 가져온 데이터이고, 이를 이용해 고객별 구매 이력에 대한 Data Mart를 구성하려고 합니다. 이제 여러 가설을 세워 재구매 여부 `target`에 영향을 미치는 여러 변수(features)를 만들어 보겠습니다. 아래는 Data Mart를 구성하는 여러 feature 에 대한 설명과 로직이 작성되어 있는 Data Mart 기획서입니다.
+
+![Data Mart 기획서](data-mart-desc.png){#fig-1 fig-align="center"}
+
+## 03-02. Data 추출 및 Mart 개발
+
+기본적인 전처리가 끝난 후 데이터를 `df_origin`로 저장되어 있습니다. 샘플링한 표본 데이터를 대상으로 Mart를 구성하기 위해서, 우선 `df_origin`과 표본 데이터 `df_all_sample`에 `bsym`과 `CustomerID`를 조합해 key 변수를 만들어 보겠습니다.
+
+```{r}
+df_origin %>% head()
+df_all_sample %>% head()
+
+# df_origin에 key 변수 생성
+df_origin <- df_origin %>% 
+  mutate(key = str_c(bsym, CustomerID))
+df_origin %>% 
+  reframe(n_key = n_distinct(key))
+
+# df_all_sample에 key 변수 생성
+df_all_sample <- df_all_sample %>% 
+  mutate(key = str_c(bsym, CustomerID))
+df_all_sample %>% 
+  reframe(n_key = n_distinct(key))
+```
+
+이제 `df_origin`의 `key`를 이용해 `df_all_sample`에 존재하는 행들만 가져와 `df_origin_sample` 이라는 데이터를 만듭니다.
+
+```{r}
+df_origin_sample <- df_origin %>% 
+  filter(key %in% df_all_sample$key)
+
+# df_origin과 df_origin_sample의 비율: 대략 30% 정도
+nrow(df_origin_sample)/nrow(df_origin)
+```
+
+### Mart 구성 
+
+#### **구매금액**
+
+Mart 기획서의 첫 번째 **구매금액** 관련 3개의 변수를 만들기 위해 `StockCode` 당 구매금액을 나타내는 변수 `amt`를 `UnitPrice * Quantity`로 정의하겠습니다.
+
+```{r}
+# 1. 구매금액 amt 관련 변수 , max_amt, min_amt
+## 1) total_amt: 당월 총 구매금액
+df_mart <- df_origin_sample %>%
+  mutate(amt = UnitPrice * Quantity) %>% 
+  group_by(bsym, CustomerID) %>% 
+  reframe(total_amt = sum(amt, na.rm = T))
+
+## 2) max_amt, min_amt: 당월 송장당 최대/최소 구매금액
+df_mart <- df_mart %>% left_join(
+  df_origin_sample %>% 
+  mutate(amt = UnitPrice * Quantity) %>% 
+  group_by(bsym, CustomerID, InvoiceNo) %>% 
+  reframe(amt = sum(amt, na.rm = T)) %>% 
+  group_by(bsym, CustomerID) %>% 
+  reframe(max_amt = max(amt, na.rm = T),
+          min_amt = min(amt, na.rm = T)),
+  by = c("bsym", "CustomerID")
+)
+
+df_mart %>% head()
+```
+
+
