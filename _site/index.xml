@@ -14,17 +14,7 @@
 <item>
   <title>E-commerce 데이터 분석 (2)</title>
   <link>https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/index.html</link>
-  <description><![CDATA[ <div class="cell" data-hash="index_cache/html/unnamed-chunk-1_d6391533e9010c7deed686989a0593de">
-<style type="text/css">
-pre code, pre, code {
-  <!-- white-space: pre !important; -->
-  overflow-x: scroll !important;
-  <!-- word-break: keep-all !important; -->
-  <!-- word-wrap: initial !important; -->
-}
-</style>
-</div>
-<p>본 포스팅은 패스트캠퍼스 <a href="https://fastcampus.co.kr/data_online_msignature">50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐</a>의 강의내용을 바탕으로 참고하여 작성하였습니다.</p>
+  <description><![CDATA[ <p>본 포스팅은 패스트캠퍼스 <a href="https://fastcampus.co.kr/data_online_msignature">50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐</a>의 강의내용을 바탕으로 참고하여 작성하였습니다.</p>
 <p>앞서 <a href="https://gwook.blog/blog/2023-12-03-ecommerce-data-analysis/">E-commerce 데이터 분석 (1)</a>에서 A사가 운영하는 이커머스 플랫폼의 ②유입 고객 재구매를 촉진시키기 위해 7단계의 문제해결 프로세스를 정의했으며, Step 5의 데이터 분석 단계에 필요한 과정을 진행했습니다.</p>
 <section id="sec-3" class="level1 page-columns page-full"><h1>03. Data Mart &amp; Feature Engineering</h1>
 <section id="data-mart-기획-및-설계" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="data-mart-기획-및-설계">03-01. Data Mart 기획 및 설계</h2>
@@ -32,7 +22,7 @@ pre code, pre, code {
 <figure class="figure page-columns page-full"><p><img src="https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/data-mart.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption margin-caption">모델링을 위한 Data Mart 기획</figcaption></figure>
 </div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_ee731af9abfd8e3795e30c6f5185c8da">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_08e65167ea0d5663cd79ed091b0ea576">
 
 </div>
 <p>고객 24,983명에 대한 거래 이력이 총 78만 건 정도였고, 이를 고객 데이터셋을 Undersampling 하여 추출한 분석 대상이 7,495명의 고객 데이터인 상황입니다. UCI Machine Learning Repository의 Online Retail 데이터를 Data Warehouse에서 가져온 데이터이고, 이를 이용해 고객별 구매 이력에 대한 Data Mart를 구성하려고 합니다. 이제 여러 가설을 세워 재구매 여부 <code>target</code>에 영향을 미치는 여러 변수(features)를 만들어 보겠습니다. 아래는 Data Mart를 구성하는 여러 feature 에 대한 설명과 로직이 작성되어 있는 Data Mart 기획서입니다.</p>
@@ -42,7 +32,7 @@ pre code, pre, code {
 </div>
 </section><section id="data-추출-및-mart-개발" class="level2"><h2 class="anchored" data-anchor-id="data-추출-및-mart-개발">03-02. Data 추출 및 Mart 개발</h2>
 <p>기본적인 전처리가 끝난 후 데이터를 <code>df_origin</code>로 저장되어 있습니다. 샘플링한 표본 데이터를 대상으로 Mart를 구성하기 위해서, 우선 <code>df_origin</code>과 표본 데이터 <code>df_all_sample</code>에 <code>bsym</code>과 <code>CustomerID</code>를 조합해 key 변수를 만들어 보겠습니다.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_242de3b3b3668e22623ee29fb513b4df">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_3f0299b26986d98aa87994610ac91f05">
 <div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">df_origin</span> <span class="op" style="color: #5E5E5E;
@@ -207,7 +197,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </div>
 </div>
 <p>이제 <code>df_origin</code>의 <code>key</code>를 이용해 <code>df_all_sample</code>에 존재하는 행들만 가져와 <code>df_origin_sample</code> 이라는 데이터를 만듭니다.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_b1e55054feb0e2e8a3a265934d2a2418">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_3093076c4294c5149a459c5425618807">
 <div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">df_origin_sample</span> <span class="op" style="color: #5E5E5E;
@@ -267,7 +257,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <li>Idea: 월별 구매금액에 따라 다음 달 재구매 확률이 다를 것이다</li>
 </ul>
 <p>Mart 기획서의 첫 번째 <strong>구매금액</strong> 관련 3개의 변수를 만들기 위해 <code>StockCode</code> 당 구매금액을 나타내는 변수 <code>amt</code>를 <code>UnitPrice * Quantity</code>로 정의하겠습니다.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_3e004f52ab4273bfbaeba91df21db606">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_d40af0b512c611c1c59f7faad1646fee">
 <div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 1. 구매금액 amt 관련 변수 , max_amt, min_amt</span></span>
@@ -505,7 +495,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <li>Idea: 월별 구매건수에 따라 다음 달 재구매 확률이 다를 것이다</li>
 </ul>
 <p>이제 구매건수(<code>cnt</code>)와 관련된 변수 3가지를 만들겠습니다. 월별 총 구매건수는 <code>total_cnt</code>로, 월별 송장(<code>InvoiceNo</code>)별 구매 품목 수의 최대/최소는 <code>max_cnt</code>, <code>min_cnt</code>로 정의하겠습니다.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_fe51eeeacf590fdb8fc94a189d5bd7d3">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_e2af5e531eae8bbec9a6e977b3083b4d">
 <div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 2. 구매건수 cnt 관련 변수</span></span>
@@ -726,7 +716,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <ul>
 <li>Idea: 월별 구매수량에 따라 다음 달 재구매 확률이 다를 것이다</li>
 </ul>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_9bcf8ff1dacfddfe17b5cf1de269c527">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_775b6d9fa64bc0af10bb3ee7ea7f68ab">
 <div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 3. 구매수량 qty 관련 변수</span></span>
@@ -830,27 +820,27 @@ background-color: null;
 font-style: inherit;">)</span></span>
 <span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_a6438fa461af98865a157fb911debf35">
+<div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">df_mart</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7,495 × 11
-   bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt
-   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
- 1 2009-12 12437          578.    578.    578.          1      27      27
- 2 2009-12 12523           74.6    74.6    74.6         1       4       4
- 3 2009-12 12539         5149.   2583.   2566.          2     104     103
- 4 2009-12 12557         1953.   1953.   1953.          1       3       3
- 5 2009-12 12664          549.    549.    549.          1       4       4
- 6 2009-12 12681         1015.   1015.   1015.          1      46      46
- 7 2009-12 12682         1073.    508.    139.          3      19       9
- 8 2009-12 12709         1413.   1197.    216           2      17       1
- 9 2009-12 12712          334.    334.    334.          1      21      21
-10 2009-12 12747         1032     381.    303.          3      12       4
-# ℹ 7,485 more rows
-# ℹ 3 more variables: total_qty &lt;int&gt;, max_qty &lt;int&gt;, min_qty &lt;int&gt;</code></pre>
+   bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty
+   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+ 1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3
+ 2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4
+ 3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2
+ 4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144
+ 5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2
+ 6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1
+ 7 2009-12 12682         1073.    508.    139.          3      19       9       415      25       1
+ 8 2009-12 12709         1413.   1197.    216           2      17       1       363      36       1
+ 9 2009-12 12712          334.    334.    334.          1      21      21       196      25       2
+10 2009-12 12747         1032     381.    303.          3      12       4       204      48       1
+# ℹ 7,485 more rows</code></pre>
 </div>
 </div>
 </section><section id="국적" class="level4"><h4 class="anchored" data-anchor-id="국적"><strong>국적</strong></h4>
@@ -858,7 +848,7 @@ font-style: inherit;">df_mart</span></span></code></pre></div>
 <li>Idea: 국적에 따라 재구매 확률이 다를 것이다</li>
 </ul>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-8_dab11cbc45feed8e5819e1e6850aee2e">
-<div class="sourceCode" id="cb17" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 4. 국적 변수 생성</span></span>
 <span><span class="va" style="color: #111111;
@@ -938,15 +928,14 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 12
-  bsym  CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty
-  &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;
-1 2009… 12437          578.    578.    578.          1      27      27       263
-2 2009… 12523           74.6    74.6    74.6         1       4       4        62
-3 2009… 12539         5149.   2583.   2566.          2     104     103      2128
-4 2009… 12557         1953.   1953.   1953.          1       3       3       576
-5 2009… 12664          549.    549.    549.          1       4       4       134
-6 2009… 12681         1015.   1015.   1015.          1      46      46       650
-# ℹ 3 more variables: max_qty &lt;int&gt;, min_qty &lt;int&gt;, Country &lt;chr&gt;</code></pre>
+  bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty Country
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;  
+1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3 France 
+2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4 France 
+3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2 Spain  
+4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144 Spain  
+5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2 Finland
+6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1 France </code></pre>
 </div>
 </div>
 </section><section id="구매-시간대" class="level4"><h4 class="anchored" data-anchor-id="구매-시간대"><strong>구매 시간대</strong></h4>
@@ -955,7 +944,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </ul>
 <p>월별 고객별 아침, 점심, 저녁, 밤에 따른 구매 빈도를 구한 후 가장 많은 시간대를 <code>peak_time</code>이라는 이름의 feature로 선택하겠습니다.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-9_91c95aadaa707bb327155b4614106440">
-<div class="sourceCode" id="cb19" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb20" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 5. 구매 시간대(아침, 점심, 저녁, 밤)</span></span>
 <span><span class="co" style="color: #5E5E5E;
@@ -1188,16 +1177,14 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 13
-  bsym  CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty
-  &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;
-1 2009… 12437          578.    578.    578.          1      27      27       263
-2 2009… 12523           74.6    74.6    74.6         1       4       4        62
-3 2009… 12539         5149.   2583.   2566.          2     104     103      2128
-4 2009… 12557         1953.   1953.   1953.          1       3       3       576
-5 2009… 12664          549.    549.    549.          1       4       4       134
-6 2009… 12681         1015.   1015.   1015.          1      46      46       650
-# ℹ 4 more variables: max_qty &lt;int&gt;, min_qty &lt;int&gt;, Country &lt;chr&gt;,
-#   peak_time &lt;chr&gt;</code></pre>
+  bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty Country peak_time
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;    
+1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3 France  Afternoon
+2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4 France  Afternoon
+3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2 Spain   Afternoon
+4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144 Spain   Morning  
+5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2 Finland Morning  
+6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1 France  Afternoon</code></pre>
 </div>
 </div>
 </section><section id="계절" class="level4"><h4 class="anchored" data-anchor-id="계절"><strong>계절</strong></h4>
@@ -1205,7 +1192,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <li>Idea: 계절에 따라 재구매 확률이 다를 것이다</li>
 </ul>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-10_034f8168414b192e923e315a54453a00">
-<div class="sourceCode" id="cb21" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb22" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 6. 계절 변수 추가</span></span>
 <span><span class="va" style="color: #111111;
@@ -1384,16 +1371,14 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 14
-  bsym  CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty
-  &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;
-1 2009… 12437          578.    578.    578.          1      27      27       263
-2 2009… 12523           74.6    74.6    74.6         1       4       4        62
-3 2009… 12539         5149.   2583.   2566.          2     104     103      2128
-4 2009… 12557         1953.   1953.   1953.          1       3       3       576
-5 2009… 12664          549.    549.    549.          1       4       4       134
-6 2009… 12681         1015.   1015.   1015.          1      46      46       650
-# ℹ 5 more variables: max_qty &lt;int&gt;, min_qty &lt;int&gt;, Country &lt;chr&gt;,
-#   peak_time &lt;chr&gt;, season &lt;chr&gt;</code></pre>
+  bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty Country peak_time season
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt; 
+1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3 France  Afternoon Winter
+2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4 France  Afternoon Winter
+3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2 Spain   Afternoon Winter
+4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144 Spain   Morning   Winter
+5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2 Finland Morning   Winter
+6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1 France  Afternoon Winter</code></pre>
 </div>
 </div>
 </section><section id="구매-빈도" class="level4"><h4 class="anchored" data-anchor-id="구매-빈도"><strong>구매 빈도</strong></h4>
@@ -1401,7 +1386,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 <li>Idea: 구매 빈도가 높은 고객은 재구매 확률이 높을 것이다</li>
 </ul>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-11_9508975d0f6e6e4ec4115b294e38a5b0">
-<div class="sourceCode" id="cb23" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb24" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 7. 당월 구매 빈도</span></span>
 <span><span class="co" style="color: #5E5E5E;
@@ -1585,16 +1570,14 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 15
-  bsym  CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty
-  &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;
-1 2009… 12437          578.    578.    578.          1      27      27       263
-2 2009… 12523           74.6    74.6    74.6         1       4       4        62
-3 2009… 12539         5149.   2583.   2566.          2     104     103      2128
-4 2009… 12557         1953.   1953.   1953.          1       3       3       576
-5 2009… 12664          549.    549.    549.          1       4       4       134
-6 2009… 12681         1015.   1015.   1015.          1      46      46       650
-# ℹ 6 more variables: max_qty &lt;int&gt;, min_qty &lt;int&gt;, Country &lt;chr&gt;,
-#   peak_time &lt;chr&gt;, season &lt;chr&gt;, freq &lt;dbl&gt;</code></pre>
+  bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty Country peak_time season   freq
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;
+1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3 France  Afternoon Winter 0.0323
+2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4 France  Afternoon Winter 0.0323
+3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2 Spain   Afternoon Winter 0.0645
+4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144 Spain   Morning   Winter 0.0323
+5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2 Finland Morning   Winter 0.0323
+6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1 France  Afternoon Winter 0.0323</code></pre>
 </div>
 </div>
 </section><section id="평균-구매금액" class="level4"><h4 class="anchored" data-anchor-id="평균-구매금액"><strong>평균 구매금액</strong></h4>
@@ -1603,7 +1586,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </ul>
 <p>이 변수는 단순히 <code>total_amt</code>를 <code>total_cnt</code>로 나눈 값입니다.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-12_26480d6700248a18a532d7efee5c7113">
-<div class="sourceCode" id="cb25" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb26" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 8. 평균 구매금액: avg_amt</span></span>
 <span><span class="co" style="color: #5E5E5E;
@@ -1647,16 +1630,14 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 16
-  bsym  CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty
-  &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;
-1 2009… 12437          578.    578.    578.          1      27      27       263
-2 2009… 12523           74.6    74.6    74.6         1       4       4        62
-3 2009… 12539         5149.   2583.   2566.          2     104     103      2128
-4 2009… 12557         1953.   1953.   1953.          1       3       3       576
-5 2009… 12664          549.    549.    549.          1       4       4       134
-6 2009… 12681         1015.   1015.   1015.          1      46      46       650
-# ℹ 7 more variables: max_qty &lt;int&gt;, min_qty &lt;int&gt;, Country &lt;chr&gt;,
-#   peak_time &lt;chr&gt;, season &lt;chr&gt;, freq &lt;dbl&gt;, avg_amt &lt;dbl&gt;</code></pre>
+  bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty Country peak_time season   freq avg_amt
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3 France  Afternoon Winter 0.0323   578. 
+2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4 France  Afternoon Winter 0.0323    74.6
+3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2 Spain   Afternoon Winter 0.0645  2575. 
+4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144 Spain   Morning   Winter 0.0323  1953. 
+5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2 Finland Morning   Winter 0.0323   549. 
+6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1 France  Afternoon Winter 0.0323  1015. </code></pre>
 </div>
 </div>
 
