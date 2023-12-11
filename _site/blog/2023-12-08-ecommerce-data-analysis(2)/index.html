@@ -91,7 +91,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><link rel="stylesheet" href="../../styles.css">
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="GeonWook - E-commerce 데이터 분석 (2)">
 <meta property="og:description" content="Data Mart 구성 및 Feature Engineering">
 <meta property="og:image" content="https://gwook.blog/blog/2023-12-08-ecommerce-data-analysis(2)/ecommerce2.png">
@@ -183,6 +183,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="#mart-%EA%B5%AC%EC%84%B1" id="toc-mart-구성" class="nav-link" data-scroll-target="#mart-%EA%B5%AC%EC%84%B1">Mart 구성</a></li>
   </ul>
 </li>
+  <li>
+<a href="#numeric-feature-engineering" id="toc-numeric-feature-engineering" class="nav-link" data-scroll-target="#numeric-feature-engineering">03-03. Numeric Feature Engineering</a>
+  <ul class="collapse">
+<li><a href="#feature-engineering" id="toc-feature-engineering" class="nav-link" data-scroll-target="#feature-engineering">Feature Engineering</a></li>
+  <li><a href="#information-value" id="toc-information-value" class="nav-link" data-scroll-target="#information-value">Information Value</a></li>
+  </ul>
+</li>
+  <li><a href="#categorical-feature-engineering" id="toc-categorical-feature-engineering" class="nav-link" data-scroll-target="#categorical-feature-engineering">03-03. Categorical Feature Engineering</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/YoonGeonWook/GWook-com/blob/main/blog/2023-12-08-ecommerce-data-analysis(2)/index.qmd" class="toc-action">View source</a></p><p><a href="https://github.com/YoonGeonWook/GWook-com/edit/main/blog/2023-12-08-ecommerce-data-analysis(2)/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/YoonGeonWook/GWook-com/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -351,7 +359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Idea: 월별 구매수량에 따라 다음 달 재구매 확률이 다를 것이다</li>
 </ul>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_775b6d9fa64bc0af10bb3ee7ea7f68ab">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_4b6b109fa6b385c66dd1f497b7f0b04e">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 3. 구매수량 qty 관련 변수</span></span>
 <span><span class="co">## 1) total_qty: 당월 총 구매수량</span></span>
 <span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">left_join</span><span class="op">(</span></span>
@@ -361,33 +369,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>            max_qty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">Quantity</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>            min_qty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">Quantity</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bsym"</span>, <span class="st">"CustomerID"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_a6438fa461af98865a157fb911debf35">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_mart</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7,495 × 11
-   bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty
-   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
- 1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3
- 2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4
- 3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2
- 4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144
- 5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2
- 6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1
- 7 2009-12 12682         1073.    508.    139.          3      19       9       415      25       1
- 8 2009-12 12709         1413.   1197.    216           2      17       1       363      36       1
- 9 2009-12 12712          334.    334.    334.          1      21      21       196      25       2
-10 2009-12 12747         1032     381.    303.          3      12       4       204      48       1
-# ℹ 7,485 more rows</code></pre>
+<pre><code># A tibble: 6 × 11
+  bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
+1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3
+2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4
+3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2
+4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144
+5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2
+6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1</code></pre>
 </div>
 </div>
 </section><section id="국적" class="level4"><h4 class="anchored" data-anchor-id="국적"><strong>국적</strong></h4>
 <ul>
 <li>Idea: 국적에 따라 재구매 확률이 다를 것이다</li>
 </ul>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_dab11cbc45feed8e5819e1e6850aee2e">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 4. 국적 변수 생성</span></span>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_56eed77e696dcb0946849879b5ea9837">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 4. 국적 변수 생성</span></span>
 <span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">left_join</span><span class="op">(</span></span>
 <span>  <span class="va">df_origin_sample</span> <span class="op">%&gt;%</span> </span>
 <span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">bsym</span>, <span class="va">CustomerID</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
@@ -412,8 +414,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Idea: 구매 시간대(아침, 점심, 저녁, 밤)에 따라 재구매 확률이 다를 것이다</li>
 </ul>
 <p>월별 고객별 아침, 점심, 저녁, 밤에 따른 구매 빈도를 구한 후 가장 많은 시간대를 <code>peak_time</code>이라는 이름의 feature로 선택하겠습니다.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_91c95aadaa707bb327155b4614106440">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 5. 구매 시간대(아침, 점심, 저녁, 밤)</span></span>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_1055e0d43034bc2cea05badd6551e73a">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 5. 구매 시간대(아침, 점심, 저녁, 밤)</span></span>
 <span><span class="co">## 아침: 6~12시, 점심: 12~18시, 저녁: 18~24시, 밤: 0~6시</span></span>
 <span><span class="co">## 시간대별 구매 빈도 계산</span></span>
 <span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">left_join</span><span class="op">(</span></span>
@@ -450,8 +452,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Idea: 계절에 따라 재구매 확률이 다를 것이다</li>
 </ul>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_034f8168414b192e923e315a54453a00">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 6. 계절 변수 추가</span></span>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_66c8b457754285bae871069cb58924c4">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 6. 계절 변수 추가</span></span>
 <span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">left_join</span><span class="op">(</span></span>
 <span>  <span class="va">df_origin_sample</span> <span class="op">%&gt;%</span> </span>
 <span>    <span class="fu">mutate</span><span class="op">(</span>month <span class="op">=</span> <span class="fu">month</span><span class="op">(</span><span class="va">InvoiceDate</span><span class="op">)</span>,</span>
@@ -482,8 +484,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Idea: 구매 빈도가 높은 고객은 재구매 확률이 높을 것이다</li>
 </ul>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_9508975d0f6e6e4ec4115b294e38a5b0">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 7. 당월 구매 빈도</span></span>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_aba2271bf30e5d1f2e906ba33b449e77">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 7. 당월 구매 빈도</span></span>
 <span><span class="co">## freq = count(InvoiceNo) / # num of days in month</span></span>
 <span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">left_join</span><span class="op">(</span></span>
 <span>  <span class="va">df_origin_sample</span> <span class="op">%&gt;%</span> </span>
@@ -516,8 +518,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Idea: 평균 구매금액에 따라 재구매 확률이 다를 것이다</li>
 </ul>
 <p>이 변수는 단순히 <code>total_amt</code>를 <code>total_cnt</code>로 나눈 값입니다.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_26480d6700248a18a532d7efee5c7113">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 8. 평균 구매금액: avg_amt</span></span>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_5d62ff9fd0067af47203d55204e0dab3">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 8. 평균 구매금액: avg_amt</span></span>
 <span><span class="co">## 송장당 평균 구매금액</span></span>
 <span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>avg_amt <span class="op">=</span> <span class="va">total_amt</span> <span class="op">/</span> <span class="va">total_cnt</span><span class="op">)</span></span>
@@ -535,9 +537,414 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1 France  Afternoon Winter 0.0323  1015. </code></pre>
 </div>
 </div>
+<p>이제 <code>target</code> 변수와 병합해 저장하겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_d74734dcd10ec473fb2ae0af6f370d9d">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">left_join</span><span class="op">(</span></span>
+<span>  <span class="va">df_all_sample</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">key</span><span class="op">)</span>,</span>
+<span>  by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bsym"</span>, <span class="st">"CustomerID"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 17
+  bsym    CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty Country peak_time season   freq avg_amt target
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+1 2009-12 12437          578.    578.    578.          1      27      27       263      24       3 France  Afternoon Winter 0.0323   578.       1
+2 2009-12 12523           74.6    74.6    74.6         1       4       4        62      36       4 France  Afternoon Winter 0.0323    74.6      0
+3 2009-12 12539         5149.   2583.   2566.          2     104     103      2128      48       2 Spain   Afternoon Winter 0.0645  2575.       0
+4 2009-12 12557         1953.   1953.   1953.          1       3       3       576     216     144 Spain   Morning   Winter 0.0323  1953.       0
+5 2009-12 12664          549.    549.    549.          1       4       4       134      72       2 Finland Morning   Winter 0.0323   549.       0
+6 2009-12 12681         1015.   1015.   1015.          1      46      46       650      72       1 France  Afternoon Winter 0.0323  1015.       1</code></pre>
+</div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7495   17</code></pre>
+</div>
+</div>
+</section></section></section><section id="numeric-feature-engineering" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="numeric-feature-engineering">03-03. Numeric Feature Engineering</h2>
+<section id="feature-engineering" class="level3"><h3 class="anchored" data-anchor-id="feature-engineering">Feature Engineering</h3>
+<blockquote class="blockquote">
+<p>Feature Enigneering이란?</p>
+</blockquote>
+<p>Feature들을 재구성하여 모델을 효과적으로 사용하기 쉽게 하는 작업을 말합니다. 즉, 모델링의 성능을 향상시키기 위해 feature를 생성, 선택, 가공하는 일련의 모든 활동을 의미합니다. Feature의 주요한 특징들을 잘 나타낼 수 있도록 변수의 변환, encoding 등의 작업들이 포함됩니다.</p>
+<p>때로는 새로운 feature를 생성하기도 하고, 변환(transformation)도 가능합니다. 또한 Feature selection(변수 선택)과 Feature extraction(차원 축소)를 이용하기도 합니다.</p>
+<p>현재 저희의 목적은 다음 달 재구매 여부 <code>target</code>을 잘 분류하는 모델을 구축하는 Classification 문제에 적합한 feature engineering 과정을 적용하겠습니다.</p>
+</section><section id="information-value" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="information-value">Information Value</h3>
+<p>이진 분류 문제에서 Event(여기서 <code>target=1</code>인 경우)와 Non Event의 비율을 고려할 때, 각 비율의 불균형한 정도를 확연하게 보고 싶을 때 사용하는 방법입니다. WoE(Weight of Evidence) 값을 아래와 같이 정의해보겠습니다.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{WoE} &amp;= \text{log}\frac{p}{1-p}\\
+where\quad p &amp;= Pr(Event)
+\end{aligned}
+\]</span></p>
+<p>즉, WoE는 Event 비율의 Odds 값에 로그를 취한 Logit 값입니다. 어떤 Feature의 각 구간(bin)에 대한 (범주형일 경우 각 level) 정보 가치 값은 <span class="math display">\[IV_i = (Event_i\% - NonEvent_i\%)\times WoE_i\]</span>으로 표현할 수 있고, 해당 Feature의 정보가치는 이를 모두 더한 <span class="math display">\[IV = \sum IV_i = \sum\{(Event_i\% - NonEvent_i\%)\times WoE_i\}\]</span> 으로 정의할 수 있습니다.</p>
+<p>이러한 feature 별 IV 값에 대한 통상적인 기준은 아래와 같습니다.</p>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full"><p><img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsqkdV%2Fbtr8wPiFwWb%2FB7ugBV1LB50Rjgm6tfU9tK%2Fimg.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption margin-caption">IV 값에 따른 예측력</figcaption></figure>
+</div>
+<p>자세한 내용은 <a href="https://recipesds.tistory.com/entry/Logistic-%EC%98%88%EC%B8%A1-%EB%AA%A8%ED%98%95%EC%97%90%EC%84%9C%EC%9D%98-%EB%B3%80%EC%88%98-%EC%84%A0%ED%83%9D-%EB%B0%A9%EB%B2%95-Information-Value">Logistic 예측 모형에서의 변수 선택 방법 - Information Value</a>을 참고하시면 됩니다.</p>
+<p>이제 앞서 구성한 Data Mart(<code>df_mart</code>)의 각 feature에 대해서 IV 값을 구해보겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_aaeac970a7512058e812f8acd27c9e67">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_mart</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">reframe</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">everything</span><span class="op">(</span><span class="op">)</span>, <span class="va">typeof</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 17
+  bsym      CustomerID total_amt max_amt min_amt total_cnt max_cnt min_cnt total_qty max_qty min_qty Country   peak_time season    freq   avg_amt target
+  &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; 
+1 character character  double    double  double  integer   integer integer integer   integer integer character character character double double  double</code></pre>
+</div>
+</div>
+<p>우선 수치형 변수들에 대해 각각 5% 단위로 binning을 해주고, 40%, 75% 백분위수를 기준으로 3개의 그룹으로 구간화를 시켜주겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-14_da39c9bd6f5419b4b0d930e7b9e34ee9">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">iv_calculate</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">var</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">quant</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">var</span><span class="op">]</span><span class="op">]</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.40</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">iv</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>grp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/findInterval.html">findInterval</a></span><span class="op">(</span><span class="va">.data</span><span class="op">[[</span><span class="va">var</span><span class="op">]</span><span class="op">]</span>, <span class="va">quant</span>, rightmost.closed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>,</span>
+<span>           n_target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">target</span><span class="op">==</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">grp</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>    <span class="fu">reframe</span><span class="op">(</span></span>
+<span>      target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">target</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>      n_target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n_target</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span></span>
+<span>      good_pct <span class="op">=</span> <span class="va">target</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span>,</span>
+<span>      bad_pct <span class="op">=</span> <span class="va">n_target</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n_target</span><span class="op">)</span>,</span>
+<span>      t_ratio <span class="op">=</span> <span class="va">target</span> <span class="op">/</span> <span class="op">(</span><span class="va">target</span> <span class="op">+</span> <span class="va">n_target</span><span class="op">)</span>,</span>
+<span>      VAR <span class="op">=</span> <span class="va">var</span>,</span>
+<span>      iv <span class="op">=</span> <span class="op">(</span><span class="va">good_pct</span> <span class="op">-</span> <span class="va">bad_pct</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">good_pct</span> <span class="op">/</span> <span class="va">bad_pct</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">iv</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">numeric_cols</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">select_if</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">target</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">iv_df</span> <span class="op">&lt;-</span> <span class="fu">map_dfr</span><span class="op">(</span><span class="va">numeric_cols</span>, <span class="op">~</span> <span class="fu">iv_calculate</span><span class="op">(</span><span class="va">df_mart</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">iv_df</span>, n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">iv_df</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 30 × 8
+     grp target n_target good_pct bad_pct t_ratio VAR             iv
+   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
+ 1     1    853     2145    0.298  0.463    0.285 total_amt 0.0719  
+ 2     2    974     1649    0.341  0.356    0.371 total_amt 0.000631
+ 3     3   1031      843    0.361  0.182    0.550 total_amt 0.123   
+ 4     1    909     2089    0.318  0.451    0.303 max_amt   0.0461  
+ 5     2   1015     1608    0.355  0.347    0.387 max_amt   0.000200
+ 6     3    934      940    0.327  0.203    0.498 max_amt   0.0593  
+ 7     1   1113     1885    0.389  0.407    0.371 min_amt   0.000733
+ 8     2   1015     1608    0.355  0.347    0.387 min_amt   0.000200
+ 9     3    730     1144    0.255  0.247    0.390 min_amt   0.000302
+10     2   2350     4476    0.822  0.965    0.344 total_cnt 0.0229  
+11     3    508      161    0.178  0.0347   0.759 total_cnt 0.234   
+12     1   1037     1897    0.363  0.409    0.353 max_cnt   0.00555 
+13     2   1059     1675    0.371  0.361    0.387 max_cnt   0.000237
+14     3    762     1065    0.267  0.230    0.417 max_cnt   0.00551 
+15     1   1199     1716    0.420  0.370    0.411 min_cnt   0.00620 
+16     2   1004     1719    0.351  0.371    0.369 min_cnt   0.00104 
+17     3    655     1202    0.229  0.259    0.353 min_cnt   0.00370 
+18     1    886     2104    0.310  0.454    0.296 total_qty 0.0548  
+19     2    985     1647    0.345  0.355    0.374 total_qty 0.000318
+20     3    987      886    0.345  0.191    0.527 total_qty 0.0913  
+21     1    667     1435    0.233  0.309    0.317 max_qty   0.0215  
+22     2   1348     2259    0.472  0.487    0.374 max_qty   0.000502
+23     3    843      943    0.295  0.203    0.472 max_qty   0.0341  
+24     2   2128     3524    0.745  0.760    0.377 min_qty   0.000315
+25     3    730     1113    0.255  0.240    0.396 min_qty   0.000957
+26     2   2081     4195    0.728  0.905    0.332 freq      0.0383  
+27     3    777      442    0.272  0.0953   0.637 freq      0.185   
+28     1    963     2035    0.337  0.439    0.321 avg_amt   0.0269  
+29     2   1030     1593    0.360  0.344    0.393 avg_amt   0.000807
+30     3    865     1009    0.303  0.218    0.462 avg_amt   0.0281  </code></pre>
+</div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Feature 별 IV 값 합산</span></span>
+<span><span class="va">iv_df</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">VAR</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">reframe</span><span class="op">(</span>iv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">iv</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">iv</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 2
+   VAR            iv
+   &lt;chr&gt;       &lt;dbl&gt;
+ 1 total_cnt 0.257  
+ 2 freq      0.223  
+ 3 total_amt 0.195  
+ 4 total_qty 0.146  
+ 5 max_amt   0.106  
+ 6 max_qty   0.0560 
+ 7 avg_amt   0.0558 
+ 8 max_cnt   0.0113 
+ 9 min_cnt   0.0109 
+10 min_qty   0.00127
+11 min_amt   0.00123</code></pre>
+</div>
+</div>
+<p>수치형 변수들에 대해서 이렇게 직접 구간(bin)의 경계값을 지정해서 binning을 할 수 있습니다. 이번에는 <code>target</code> 변수를 잘 예측하는, 즉 변수별 IV 값이 높게 나오도록 구간화를 하는 방법을 소개하겠습니다. 이러한 방법을 optimized binning이라고 합니다.</p>
+<p><code>dlookr</code> 패키지의 <code><a href="https://choonghyunryu.github.io/dlookr/reference/binning_by.html">binning_by()</a></code> 함수는 반응변수(<code>target</code>)을 가장 잘 예측하는 경계값으로 수치형 변수를 binning 하기 때문에 변수별로 bin의 개수가 다를 수 있으며, 수치형 변수가 <code>target</code>과 유의한 관계가 없는 경우 구간화를 하지 않아서 변수 선택을 고려할 수도 있습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-15_ef6ca17cc534e236ab93ea948cc59c7e">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/choonghyunryu/dlookr/">dlookr</a></span><span class="op">)</span></span>
+<span><span class="va">numeric_cols</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> <span class="fu">select_if</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">target</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># binning_by() 이용 시 target과 유의하지 않은 변수는 구간화를 하지 않음</span></span>
+<span><span class="va">bin_process</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">var</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="va">bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://choonghyunryu.github.io/dlookr/reference/binning_by.html">binning_by</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">target</span>, <span class="va">var</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">bin</span>, <span class="st">"name"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">var</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">bin</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, warning <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">w</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">bin</span> <span class="op">&lt;-</span> <span class="st">"No significant splits"</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">bin</span>, <span class="st">"name"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">var</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">bin</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">bin</span> <span class="op">&lt;-</span> <span class="st">"Error"</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">bin</span>, <span class="st">"name"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">var</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">bin</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">bin_list</span> <span class="op">&lt;-</span> <span class="fu">map</span><span class="op">(</span><span class="va">numeric_cols</span>, <span class="op">~</span><span class="fu">bin_process</span><span class="op">(</span><span class="va">df_mart</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-16_7bbc461ab0fbeb140af6b9c6d78cbc0a">
+
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-17_675123f57d5041dd5b493b9942637266">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># target과 유의하지 않은 변수 확인:</span></span>
+<span><span class="va">bin_list</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">keep</span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html">typeof</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"character"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">map</span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"name"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "min_amt" "min_qty"</code></pre>
+</div>
+</div>
+<p>앞서 40%, 75% 백분위수 값을 경계로 IV 값을 구했 때 가장 낮은 IV 값을 가졌던 <code>min_amt</code>와 <code>min_qty</code>는 최적 구간으로 IV 값을 구했을 경우에도 <code>target</code>과 유의하지 않다고 판단되므로 고려하지 않겠습니다.</p>
+<p>Optimized binning이 각 수치형 변수의 몇 % 백분위수를 bin의 경계값으로 삼는지 확인해 보겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-18_12f65cddccaa269a245c03efbf131c4b">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bin_cutoff</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">bin</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co"># cutoff level </span></span>
+<span>  <span class="va">cutoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">bin</span>, <span class="st">"breaks"</span><span class="op">)</span></span>
+<span>  <span class="va">grp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">cutoff</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="kw">if</span><span class="op">(</span><span class="va">i</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span><span class="op">{</span></span>
+<span>      <span class="va">brk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"["</span>, <span class="va">cutoff</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="st">","</span>, <span class="va">cutoff</span><span class="op">[</span><span class="va">i</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, <span class="st">"]"</span><span class="op">)</span></span>
+<span>    <span class="op">}</span> <span class="kw">else</span><span class="op">{</span></span>
+<span>      <span class="va">brk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"("</span>, <span class="va">cutoff</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="st">","</span>, <span class="va">cutoff</span><span class="op">[</span><span class="va">i</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, <span class="st">"]"</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">grp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">grp</span>, <span class="va">brk</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">bin</span>, <span class="st">"levels"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">grp</span></span>
+<span>  <span class="co"># data의 수치형변수에서 해당 cutoff가 몇% 백분위수 인지</span></span>
+<span>  <span class="va">value</span> <span class="op">&lt;-</span> <span class="va">cutoff</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">cutoff</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="va">ecdf_func</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/ecdf.html">ecdf</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">bin</span>, <span class="st">"name"</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">percentile</span> <span class="op">&lt;-</span> <span class="fu">ecdf_func</span><span class="op">(</span><span class="va">value</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">bin</span>, <span class="st">"name"</span><span class="op">)</span>, </span>
+<span>                    cutoff <span class="op">=</span> <span class="va">value</span>,</span>
+<span>                    percentile <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/percent_format.html">percent</a></span><span class="op">(</span><span class="va">percentile</span>, accuracy <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">sig_bin_list</span> <span class="op">&lt;-</span> <span class="va">bin_list</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">keep</span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html">typeof</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"integer"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Optimized bin의 경계값 분위수 확인</span></span>
+<span><span class="va">sig_bin_list</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">map</span><span class="op">(</span><span class="op">~</span><span class="fu">bin_cutoff</span><span class="op">(</span><span class="va">df_mart</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+        Var  cutoff percentile
+1 total_amt  138.70        14%
+2 total_amt  219.82        26%
+3 total_amt  542.10        70%
+4 total_amt 1878.72        94%
+
+[[2]]
+      Var  cutoff percentile
+1 max_amt  173.36        20%
+2 max_amt  477.46        72%
+3 max_amt 1136.68        94%
+
+[[3]]
+        Var cutoff percentile
+1 total_cnt      1        74%
+2 total_cnt      2        92%
+
+[[4]]
+      Var cutoff percentile
+1 max_cnt      3         8%
+2 max_cnt     44        86%
+
+[[5]]
+      Var cutoff percentile
+1 min_cnt      4        20%
+2 min_cnt     32        84%
+
+[[6]]
+        Var cutoff percentile
+1 total_qty     95        22%
+2 total_qty    235        58%
+3 total_qty    363        74%
+4 total_qty   1047        94%
+
+[[7]]
+      Var cutoff percentile
+1 max_qty     19        26%
+2 max_qty     90        84%
+3 max_qty    144        94%
+
+[[8]]
+   Var     cutoff percentile
+1 freq 0.03225806        42%
+2 freq 0.03571429        74%
+3 freq 0.07142857        92%
+
+[[9]]
+      Var    cutoff percentile
+1 avg_amt  154.6950        18%
+2 avg_amt  273.6600        44%
+3 avg_amt  521.0000        80%
+4 avg_amt  609.6733        84%
+5 avg_amt 1090.7600        94%</code></pre>
+</div>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Optimized binning 후 IV 값 확인</span></span>
+<span><span class="va">sig_bin_list</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">map</span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"name"</span><span class="op">)</span>,</span>
+<span>                  IV <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"performance"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">pull</span><span class="op">(</span><span class="va">IV</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">list_rbind</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">IV</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       name      IV
+1 total_cnt 0.36390
+2      freq 0.36390
+3 total_amt 0.28501
+4 total_qty 0.21204
+5   max_amt 0.12493
+6   max_qty 0.08274
+7   avg_amt 0.07401
+8   max_cnt 0.03034
+9   min_cnt 0.01942</code></pre>
+</div>
+</div>
+<p>낮은 IV 값을 가졌던 <code>min_qty</code>와 <code>min_amt</code>를 제외하고 비교해보면, 직접 구간화를 했을 때보다 전반적으로 IV 값들이 높아졌습니다.</p>
+<p>Binning 후 각 구간의 분포와 <code>target</code>이 1일 때의 분포 그래프를 확인할 수도 있습니다. 아래는 <code>total_cnt</code>의 최적 구간화 이후 각 구간별 분포와, <code>target</code>이 1인 것의 분포를 나타냅니다.</p>
+<div class="cell page-columns page-full" data-hash="index_cache/html/fig-2_b41a4ae560583addc34df33c93b009e5">
+<details><summary>Code</summary><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span><span class="va">total_cnt_bin</span> <span class="op">&lt;-</span> <span class="va">sig_bin_list</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">keep</span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"name"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"total_cnt"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> </span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="va">total_cnt_bin</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"freq"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="va">total_cnt_bin</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"posrate"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display page-columns page-full">
+<div id="fig-2" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full"><p><img src="index_files/figure-html/fig-2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption margin-caption">Figure&nbsp;2: total_cnt binning 후 분포</figcaption></figure>
+</div>
+</div>
+</div>
+</section></section><section id="categorical-feature-engineering" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="categorical-feature-engineering">03-03. Categorical Feature Engineering</h2>
+<p>범주형 변수인 <code>Country</code>, <code>peak_time</code>, <code>season</code>에 대해서도 IV 값을 구해서 <code>target</code> 변수와의 관계를 살펴보겠습니다.</p>
+<p>우선 국적 변수인 <code>Country</code>에 대해 살펴보겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-20_22611fc5ca1de0cd13d4322096233725">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 국적 Country 변수 unique한 값 수</span></span>
+<span><span class="va">df_mart</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">reframe</span><span class="op">(</span>n_uniq <span class="op">=</span> <span class="fu">n_distinct</span><span class="op">(</span><span class="va">Country</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  n_uniq
+   &lt;int&gt;
+1     33</code></pre>
+</div>
+</div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/fig-3_7d78f508cbd4f1a398b4d18d33e423e9">
+<details><summary>Code</summary><div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_mart</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Country</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_bar</span><span class="op">(</span>position <span class="op">=</span> <span class="st">"dodge"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Target"</span>, x <span class="op">=</span> <span class="st">"Country"</span>, y <span class="op">=</span> <span class="st">"Count"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display page-columns page-full">
+<div id="fig-3" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full"><p><img src="index_files/figure-html/fig-3-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption margin-caption">Figure&nbsp;3: 국적별 target 분포</figcaption></figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-3">Figure&nbsp;3</a> 을 보면 <code>Country</code> 변수의 대부분이 영국(United Kingdom)임을 알 수 있습니다. 따라서 영국을 제외한 나머지 값들은 기타 국가로 변경하겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-22_e4ea7c0844cd9b3de316cb8b7a3c026d">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_mart</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">count</span><span class="op">(</span><span class="va">Country</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>ratio <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 33 × 3
+   Country            n   ratio
+   &lt;chr&gt;          &lt;int&gt;   &lt;dbl&gt;
+ 1 United Kingdom  6871 0.917  
+ 2 Germany          150 0.0200 
+ 3 France           144 0.0192 
+ 4 Belgium           38 0.00507
+ 5 Spain             33 0.00440
+ 6 Australia         25 0.00334
+ 7 Italy             25 0.00334
+ 8 Netherlands       23 0.00307
+ 9 Switzerland       23 0.00307
+10 Portugal          22 0.00294
+# ℹ 23 more rows</code></pre>
+</div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># UK 이외의 기타 국가로 처리</span></span>
+<span><span class="va">df_mart</span> <span class="op">&lt;-</span> <span class="va">df_mart</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>Country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Country</span><span class="op">==</span><span class="st">"United Kingdom"</span>, <span class="st">"UK"</span>, <span class="st">"ETC"</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이제 범주형 변수인 <code>Country</code>, <code>peak_time</code>, <code>season</code>의 IV 값을 구해보겠습니다.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-23_4073d5f117e9a58ee18a622dfd00682d">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ShichenXie/scorecard">scorecard</a></span><span class="op">)</span></span>
+<span><span class="va">Country_iv</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://shichen.name/scorecard/reference/woebin.html">woebin</a></span><span class="op">(</span><span class="va">df_mart</span>, <span class="st">"target"</span>, <span class="st">"Country"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>✔ Binning on 7495 rows and 2 columns in 00:00:01</code></pre>
+</div>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">peak_iv</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://shichen.name/scorecard/reference/woebin.html">woebin</a></span><span class="op">(</span><span class="va">df_mart</span>, <span class="st">"target"</span>, <span class="st">"peak_time"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>✔ Binning on 7495 rows and 2 columns in 00:00:01</code></pre>
+</div>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">season_iv</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://shichen.name/scorecard/reference/woebin.html">woebin</a></span><span class="op">(</span><span class="va">df_mart</span>, <span class="st">"target"</span>, <span class="st">"season"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>✔ Binning on 7495 rows and 2 columns in 00:00:01</code></pre>
+</div>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Country IV </span></span>
+<span><span class="va">Country_iv</span><span class="op">$</span><span class="va">Country</span> <span class="op">%&gt;%</span> <span class="fu">tibble</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 12
+  variable bin   count count_distr   neg   pos posprob      woe  bin_iv total_iv
+  &lt;chr&gt;    &lt;chr&gt; &lt;int&gt;       &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1 Country  ETC     624      0.0833   387   237   0.380 -6.42e-3 3.43e-6  3.74e-6
+2 Country  UK     6871      0.917   4250  2621   0.381  5.82e-4 3.11e-7  3.74e-6
+# ℹ 2 more variables: breaks &lt;chr&gt;, is_special_values &lt;lgl&gt;</code></pre>
+</div>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># peak_time IV</span></span>
+<span><span class="va">peak_iv</span><span class="op">$</span><span class="va">peak_time</span> <span class="op">%&gt;%</span> <span class="fu">tibble</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 12
+  variable  bin   count count_distr   neg   pos posprob     woe  bin_iv total_iv
+  &lt;chr&gt;     &lt;chr&gt; &lt;int&gt;       &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1 peak_time Afte…  4845       0.646  3019  1826   0.377 -0.0189 2.29e-4 0.000646
+2 peak_time Morn…  2650       0.354  1618  1032   0.389  0.0343 4.16e-4 0.000646
+# ℹ 2 more variables: breaks &lt;chr&gt;, is_special_values &lt;lgl&gt;</code></pre>
+</div>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># season IV</span></span>
+<span><span class="va">season_iv</span><span class="op">$</span><span class="va">season</span> <span class="op">%&gt;%</span> <span class="fu">tibble</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 12
+  variable bin    count count_distr   neg   pos posprob     woe  bin_iv total_iv
+  &lt;chr&gt;    &lt;chr&gt;  &lt;int&gt;       &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1 season   Autumn  2563       0.342  1616   947   0.369 -0.0505 8.65e-4  0.00350
+2 season   Sprin…  3206       0.428  1996  1210   0.377 -0.0166 1.17e-4  0.00350
+3 season   Summer  1726       0.230  1025   701   0.406  0.104  2.52e-3  0.00350
+# ℹ 2 more variables: breaks &lt;chr&gt;, is_special_values &lt;lgl&gt;</code></pre>
+</div>
+</div>
+<p><code>target</code> 변수에 대한 범주형 변수들의 IV 값을 보면 굉장히 낮으므로 이 세 변수는 <code>target</code> 변수와 유의미한 관계가 없어 보입니다.</p>
 
 
-</section></section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

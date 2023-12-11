@@ -15,14 +15,6 @@ knitr::opts_chunk$set()
 options(width=200)
 ```
 
-```{css, echo=FALSE}
-pre code, pre, code {
-  <!-- white-space: pre !important; -->
-  overflow-x: scroll !important;
-  <!-- word-break: keep-all !important; -->
-  <!-- word-wrap: initial !important; -->
-}
-```
 
 본 포스팅은 패스트캠퍼스 [50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐](https://fastcampus.co.kr/data_online_msignature)의 강의내용을 바탕으로 참고하여 작성하였습니다.
 
